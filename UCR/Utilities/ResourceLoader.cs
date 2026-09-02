@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
@@ -17,9 +18,10 @@ namespace HidWizards.UCR.Utilities
         {
             var catalog = new AggregateCatalog();
 
-            if (Directory.Exists(@".\Plugins"))
+            var pluginsPath = Path.Combine(AppContext.BaseDirectory, "Plugins");
+            if (Directory.Exists(pluginsPath))
             {
-                foreach (var path in Directory.EnumerateDirectories(@".\Plugins", "*", SearchOption.TopDirectoryOnly))
+                foreach (var path in Directory.EnumerateDirectories(pluginsPath, "*", SearchOption.TopDirectoryOnly))
                 {
                     var folderName = path.Remove(0, path.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                     if (File.Exists(Path.Combine(path, folderName + ".dll")))

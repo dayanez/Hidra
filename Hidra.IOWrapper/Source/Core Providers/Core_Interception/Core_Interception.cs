@@ -154,6 +154,12 @@ namespace Core_Interception
 
         private void SetPollThreadState(bool state)
         {
+            // _timer can still be null here if the constructor threw before reaching its
+            // assignment (e.g. the Interception driver isn't installed) - the object is still
+            // finalizable at that point, so Dispose() can run against a partially-built instance.
+            if (_timer == null)
+                return;
+
             //if (state && !_pollThreadRunning)
             if (state && !_timer.IsRunning)
             {

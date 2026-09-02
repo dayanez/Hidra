@@ -22,7 +22,8 @@ namespace HidWizards.UCR.Core.Managers
             var catalog = new AggregateCatalog();
             try
             {
-                foreach (var path in Directory.EnumerateDirectories(@".\" + basePath, "*", SearchOption.TopDirectoryOnly))
+                var absoluteBasePath = Path.Combine(AppContext.BaseDirectory, basePath);
+                foreach (var path in Directory.EnumerateDirectories(absoluteBasePath, "*", SearchOption.TopDirectoryOnly))
                 {
                     var folderName = path.Remove(0, path.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                     if (File.Exists(Path.Combine(path, folderName + ".dll")))

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -59,27 +60,34 @@ namespace HidWizards.UCR
             var result = MessageBox.Show("UCR has detected blocked files which are required, do you want to unblock blocked UCR files?", "Unblock files?", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
 
-            var process = new Process
+            try
             {
-                StartInfo =
-                {
-                    FileName = "UCR_unblocker.exe",
-                    UseShellExecute = true,
-                    Arguments = $"\"{Environment.CurrentDirectory}\"",
-                    CreateNoWindow = true
-                }
-            };
-            process.Start();
-            process.WaitForExit(1000 * 60 * 5);
-
-            var exitCode = process.ExitCode;
-            if (exitCode != 0)
+                UnblockFiles(AppContext.BaseDirectory);
+            }
+            catch (Exception e)
             {
+                Logger.Error("UCR failed to unblock the required files", e);
                 MessageBox.Show("UCR failed to unblock the required files", "Failed to unblock", MessageBoxButton.OK, MessageBoxImage.Error);
                 Current.Shutdown();
+                return;
             }
 
             InitializeUcr();
+        }
+
+        // Windows marks files extracted from a downloaded zip (or copied over a network/USB) with a
+        // "Zone.Identifier" NTFS alternate data stream, which can stop the CLR from loading them as
+        // plugins. Deleting that stream is all "unblocking" a file actually does.
+        private static void UnblockFiles(string rootDirectory)
+        {
+            foreach (var file in Directory.EnumerateFiles(rootDirectory, "*", SearchOption.AllDirectories))
+            {
+                var zoneIdentifierStream = file + ":Zone.Identifier";
+                if (File.Exists(zoneIdentifierStream))
+                {
+                    File.Delete(zoneIdentifierStream);
+                }
+            }
         }
 
         private static Process[] GetProcesses()

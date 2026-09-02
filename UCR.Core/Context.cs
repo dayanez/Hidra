@@ -16,7 +16,7 @@ namespace HidWizards.UCR.Core
     public sealed class Context : IDisposable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string ContextName = "context.xml";
+        private static string ContextName => Path.Combine(AppContext.BaseDirectory, "context.xml");
         private const string PluginPath = "Plugins";
 
         /* Persistence */

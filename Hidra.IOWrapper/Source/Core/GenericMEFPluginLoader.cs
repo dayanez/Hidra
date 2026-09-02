@@ -35,9 +35,10 @@ namespace HidWizards.IOWrapper.Core
         {
             var catalog = new AggregateCatalog();
 
-            if (Directory.Exists($@".\{basePath}"))
+            var absoluteBasePath = Path.Combine(AppContext.BaseDirectory, basePath);
+            if (Directory.Exists(absoluteBasePath))
             {
-                foreach (var path in Directory.EnumerateDirectories($@".\{basePath}", "*", SearchOption.TopDirectoryOnly))
+                foreach (var path in Directory.EnumerateDirectories(absoluteBasePath, "*", SearchOption.TopDirectoryOnly))
                 {
                     var folderName = path.Remove(0, path.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                     var dllName = $"{folderName}.dll";
