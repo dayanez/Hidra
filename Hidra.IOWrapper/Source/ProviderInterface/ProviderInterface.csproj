@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>HidWizards.IOWrapper.ProviderInterface</RootNamespace>
+    <AssemblyName>IOWrapper.IProvider</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataObjects\DTOs.csproj" />
+  </ItemGroup>
+
+</Project>

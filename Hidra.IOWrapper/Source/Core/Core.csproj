@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>HidWizards.IOWrapper.Core</RootNamespace>
+    <AssemblyName>IOWrapper.Core</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataObjects\DTOs.csproj" />
+    <ProjectReference Include="..\ProviderInterface\ProviderInterface.csproj" />
+  </ItemGroup>
+
+</Project>
