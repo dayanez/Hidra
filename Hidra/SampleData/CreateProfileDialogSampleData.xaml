@@ -1,0 +1,17 @@
+<dashboard:CreateProfileDialogViewModel xmlns:viewModels="clr-namespace:Hidra.ViewModels"
+                             xmlns:models="clr-namespace:Hidra.Core.Models;assembly=Hidra.Core"
+                             xmlns:profileViewModels="clr-namespace:Hidra.ViewModels.ProfileViewModels"
+                             xmlns:dashboard="clr-namespace:Hidra.ViewModels.Dashboard"
+                             xmlns:deviceViewModels="clr-namespace:Hidra.ViewModels.DeviceViewModels"
+                             xmlns:controls="clr-namespace:Hidra.ViewModels.Controls">
+    <dashboard:CreateProfileDialogViewModel.InputControl>
+        <controls:DeviceSelectControlViewModel>
+            <controls:DeviceSelectControlViewModel.Devices>
+                <deviceViewModels:DeviceViewModel Title="Xbox controller 1" ProviderName="DX provider"/>
+                <deviceViewModels:DeviceViewModel Title="Xbox controller 2" ProviderName="DX provider"/>
+                <deviceViewModels:DeviceViewModel Title="Some custom controller (Extra buttons)" ProviderName="DX provider"/>
+            </controls:DeviceSelectControlViewModel.Devices>
+        </controls:DeviceSelectControlViewModel>
+    </dashboard:CreateProfileDialogViewModel.InputControl>
+
+</dashboard:CreateProfileDialogViewModel>

@@ -1,0 +1,14 @@
+<dashboard:DashboardViewModel xmlns:viewModels="clr-namespace:Hidra.ViewModels"
+                             xmlns:models="clr-namespace:Hidra.Core.Models;assembly=Hidra.Core"
+                             xmlns:profileViewModels="clr-namespace:Hidra.ViewModels.ProfileViewModels"
+                             xmlns:dashboard="clr-namespace:Hidra.ViewModels.Dashboard">
+    <dashboard:DashboardViewModel.ProfileList>
+        <dashboard:ProfileItem Title="Test">
+            <dashboard:ProfileItem.Items>
+                <dashboard:ProfileItem Title="Child"></dashboard:ProfileItem>
+            </dashboard:ProfileItem.Items>
+        </dashboard:ProfileItem>
+        <dashboard:ProfileItem Title="Test"/>
+        <dashboard:ProfileItem Title="Test"/>
+    </dashboard:DashboardViewModel.ProfileList>
+</dashboard:DashboardViewModel>

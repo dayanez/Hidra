@@ -33,15 +33,15 @@
 
   <Target Name="CopyToProvidersFolder" AfterTargets="Build">
     <PropertyGroup>
-      <UcrAppProvidersDir>$(MSBuildThisFileDirectory)..\..\..\..\UCR\bin\$(Configuration)\$(TargetFramework)\Providers\$(TargetName)\</UcrAppProvidersDir>
+      <HidraAppProvidersDir>$(MSBuildThisFileDirectory)..\..\..\..\Hidra\bin\$(Configuration)\$(TargetFramework)\Providers\$(TargetName)\</HidraAppProvidersDir>
     </PropertyGroup>
     <ItemGroup>
       <ProviderOutputFiles Include="$(TargetDir)*.dll" />
       <ProviderOutputFiles Include="$(TargetDir)*.pdb" Condition="'$(Configuration)' == 'Debug'" />
       <ProviderOutputFiles Include="$(TargetDir)Settings.xml" Condition="Exists('$(TargetDir)Settings.xml')" />
     </ItemGroup>
-    <MakeDir Directories="$(UcrAppProvidersDir)" Condition="!Exists('$(UcrAppProvidersDir)')" />
-    <Copy SourceFiles="@(ProviderOutputFiles)" DestinationFolder="$(UcrAppProvidersDir)" />
+    <MakeDir Directories="$(HidraAppProvidersDir)" Condition="!Exists('$(HidraAppProvidersDir)')" />
+    <Copy SourceFiles="@(ProviderOutputFiles)" DestinationFolder="$(HidraAppProvidersDir)" />
   </Target>
 
 </Project>

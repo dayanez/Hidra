@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Forked from Universal Control Remapper (UCR) and rebranded as Hidra
+- Ported the core app, plugin system, and the Interception/ViGEm providers to .NET 8
+- Vendored the IOWrapper driver layer directly into this repo as `Hidra.IOWrapper`
+
+Everything below this point is inherited history from the upstream UCR project, prior to the
+Hidra fork.
+
 ## [0.9.0] - 2020-01-02
 
 ### Added
