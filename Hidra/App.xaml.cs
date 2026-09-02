@@ -25,6 +25,7 @@ namespace Hidra
         {
             base.OnStartup(e);
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
 
             mutex = new SingleGlobalInstance(); 
             if (mutex.HasHandle && GetProcesses().Length <= 1)
@@ -158,6 +159,16 @@ namespace Hidra
         {
             var exception = (Exception) e.ExceptionObject;
             Logger.Fatal(exception.Message, exception);
+        }
+
+        // WPF routes exceptions thrown on the UI thread (e.g. from a button Click handler, or an
+        // async void continuation back on the UI thread) here, not through AppDomain.UnhandledException -
+        // without this, those crashes terminate the process with nothing logged at all.
+        private static void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Logger.Fatal(e.Exception.Message, e.Exception);
+            MessageBox.Show($"An unexpected error occurred:\n\n{e.Exception.Message}\n\nSee the log for details.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
         }
     }
 }

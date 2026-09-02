@@ -8,7 +8,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:dashboard="clr-namespace:Hidra.ViewModels.Dashboard"
              mc:Ignorable="d" 
-             MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type materialDesign:DialogHost}},Path=ActualHeight}"
+             MaxHeight="500"
              Width="300"
              Margin="-16"
              Padding="16"
