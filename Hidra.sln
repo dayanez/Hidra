@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
@@ -35,6 +35,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core_Interception", "Hidra.IOWrapper\Source\Core Providers\Core_Interception\Core_Interception.csproj", "{5A4E0F1E-BD91-40CC-BFDD-4067FECB1E9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core_ViGEm", "Hidra.IOWrapper\Source\Core Providers\Core_ViGEm\Core_ViGEm.csproj", "{F388C22F-06F5-4646-8A73-019950BD7D23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core_RawInputHook", "Hidra.IOWrapper\Source\Core Providers\Core_RawInputHook\Core_RawInputHook.csproj", "{DA683289-EC19-4B13-8010-6E44605D203E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,10 @@ Global
 		{F388C22F-06F5-4646-8A73-019950BD7D23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F388C22F-06F5-4646-8A73-019950BD7D23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F388C22F-06F5-4646-8A73-019950BD7D23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA683289-EC19-4B13-8010-6E44605D203E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA683289-EC19-4B13-8010-6E44605D203E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA683289-EC19-4B13-8010-6E44605D203E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA683289-EC19-4B13-8010-6E44605D203E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,5 +123,6 @@ Global
 		{C710758A-BC6F-4BAC-9817-BB144A7B5B6A} = {04849AFF-A398-488D-A5CA-A9CB52399FCD}
 		{5A4E0F1E-BD91-40CC-BFDD-4067FECB1E9F} = {04849AFF-A398-488D-A5CA-A9CB52399FCD}
 		{F388C22F-06F5-4646-8A73-019950BD7D23} = {04849AFF-A398-488D-A5CA-A9CB52399FCD}
+		{DA683289-EC19-4B13-8010-6E44605D203E} = {04849AFF-A398-488D-A5CA-A9CB52399FCD}
 	EndGlobalSection
 EndGlobal
