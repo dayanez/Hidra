@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HidWizards.UCR.Views.Dialogs.CreateProfileDialog"
+<UserControl x:Class="HidWizards.UCR.Views.Dialogs.CreateProfileDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,7 +17,7 @@
              MaxWidth="1200"
              Margin="-16"
              Padding="16"
-             Background="{DynamicResource MaterialDesignPaper}">
+             Background="{DynamicResource MaterialDesign.Brush.Background}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -30,7 +30,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBlock Text="{Binding Title}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
+            <TextBlock Text="{Binding Title}" Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
             <TextBox x:Name="TextValue" wpf:HintAssist.Hint="Profile name" VerticalAlignment="Top" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
                  Margin="0 6 0 0"
                  FontSize="18" Grid.Row="1">

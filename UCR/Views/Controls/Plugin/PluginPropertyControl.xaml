@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HidWizards.UCR.Views.Controls.Plugin.PluginPropertyControl"
+<UserControl x:Class="HidWizards.UCR.Views.Controls.Plugin.PluginPropertyControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -15,7 +15,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Text="{Binding Name}" Margin="0 12" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+        <TextBlock Grid.Row="0" Text="{Binding Name}" Margin="0 12" Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>
         <ContentPresenter Content="{Binding PropertyContent, ElementName=PluginPropertyControlName}" Grid.Row="0" Grid.Column="1"/>
     </Grid>
 </UserControl>

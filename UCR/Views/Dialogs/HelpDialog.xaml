@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HidWizards.UCR.Views.Dialogs.HelpDialog"
+<UserControl x:Class="HidWizards.UCR.Views.Dialogs.HelpDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,7 +14,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Help" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="0 0 0 8"/>
+        <TextBlock Text="Help" Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0 0 0 8"/>
         <TextBlock TextWrapping="Wrap" Grid.Row="1">
             Documentation for using Universal Control Remapper (UCR) can be found on the Github <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/snoothy/ucr/wiki">wiki</Hyperlink>
             <LineBreak/>

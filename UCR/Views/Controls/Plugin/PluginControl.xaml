@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HidWizards.UCR.Views.Controls.Plugin.PluginControl"
+<UserControl x:Class="HidWizards.UCR.Views.Controls.Plugin.PluginControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,7 +23,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Margin="0"
                                VerticalAlignment="Center"
-                               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                Text="{Binding Plugin.PluginName}"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Button ToolTip="Add filter"
@@ -111,7 +111,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 8 4 8" Text="{Binding GroupName}" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 8 4 8" Text="{Binding GroupName}" Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
                                 <Separator Grid.Row="0" Grid.Column="1" Style="{StaticResource MaterialDesignSeparator}" />
                                 <plugin:PluginPropertyListControl DataContext="{Binding}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
                             </Grid>

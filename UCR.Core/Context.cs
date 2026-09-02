@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.Core;
 using HidWizards.UCR.Core.Annotations;
@@ -165,18 +164,6 @@ namespace HidWizards.UCR.Core
         {
             SubscriptionsManager.Dispose();
             IOController?.Dispose();
-        }
-
-        public static T DeepClone<T>(T obj)
-        {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, obj);
-                ms.Position = 0;
-
-                return (T)formatter.Deserialize(ms);
-            }
         }
 
         public static T DeepXmlClone<T>(T obj)

@@ -17,12 +17,15 @@ namespace HidWizards.UCR.Utilities
         {
             var catalog = new AggregateCatalog();
 
-            foreach (var path in Directory.EnumerateDirectories(@".\Plugins", "*", SearchOption.TopDirectoryOnly))
+            if (Directory.Exists(@".\Plugins"))
             {
-                var folderName = path.Remove(0, path.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                if (File.Exists(Path.Combine(path, folderName + ".dll")))
+                foreach (var path in Directory.EnumerateDirectories(@".\Plugins", "*", SearchOption.TopDirectoryOnly))
                 {
-                    catalog.Catalogs.Add(new DirectoryCatalog(path, folderName + ".dll"));
+                    var folderName = path.Remove(0, path.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                    if (File.Exists(Path.Combine(path, folderName + ".dll")))
+                    {
+                        catalog.Catalogs.Add(new DirectoryCatalog(path, folderName + ".dll"));
+                    }
                 }
             }
 
