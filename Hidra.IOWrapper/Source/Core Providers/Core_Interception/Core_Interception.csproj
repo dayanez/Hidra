@@ -6,6 +6,9 @@
     <AssemblyName>Core_Interception</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>disable</Nullable>
+    <!-- This is loaded as a MEF plugin, not project-referenced by the app, so its own
+         NuGet dependencies (and HidDeviceHelper's HidSharp) must be copied locally too. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,5 +30,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <Target Name="CopyToProvidersFolder" AfterTargets="Build">
+    <PropertyGroup>
+      <UcrAppProvidersDir>$(MSBuildThisFileDirectory)..\..\..\..\UCR\bin\$(Configuration)\$(TargetFramework)\Providers\$(TargetName)\</UcrAppProvidersDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProviderOutputFiles Include="$(TargetDir)*.dll" />
+      <ProviderOutputFiles Include="$(TargetDir)*.pdb" Condition="'$(Configuration)' == 'Debug'" />
+      <ProviderOutputFiles Include="$(TargetDir)Settings.xml" Condition="Exists('$(TargetDir)Settings.xml')" />
+    </ItemGroup>
+    <MakeDir Directories="$(UcrAppProvidersDir)" Condition="!Exists('$(UcrAppProvidersDir)')" />
+    <Copy SourceFiles="@(ProviderOutputFiles)" DestinationFolder="$(UcrAppProvidersDir)" />
+  </Target>
 
 </Project>

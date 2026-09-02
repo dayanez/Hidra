@@ -6,6 +6,9 @@
     <AssemblyName>Core_ViGEm</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>disable</Nullable>
+    <!-- This is loaded as a MEF plugin, not project-referenced by the app, so its own
+         NuGet dependency (Nefarius.ViGEm.Client) must be copied locally too. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +22,17 @@
     <ProjectReference Include="..\..\Provider Libraries\ProviderLogger\ProviderLogger.csproj" />
     <ProjectReference Include="..\..\ProviderInterface\ProviderInterface.csproj" />
   </ItemGroup>
+
+  <Target Name="CopyToProvidersFolder" AfterTargets="Build">
+    <PropertyGroup>
+      <UcrAppProvidersDir>$(MSBuildThisFileDirectory)..\..\..\..\UCR\bin\$(Configuration)\$(TargetFramework)\Providers\$(TargetName)\</UcrAppProvidersDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProviderOutputFiles Include="$(TargetDir)*.dll" />
+      <ProviderOutputFiles Include="$(TargetDir)*.pdb" Condition="'$(Configuration)' == 'Debug'" />
+    </ItemGroup>
+    <MakeDir Directories="$(UcrAppProvidersDir)" Condition="!Exists('$(UcrAppProvidersDir)')" />
+    <Copy SourceFiles="@(ProviderOutputFiles)" DestinationFolder="$(UcrAppProvidersDir)" />
+  </Target>
 
 </Project>
