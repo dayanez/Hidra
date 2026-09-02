@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+using System;
 using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.DualShock4;
 using System.Collections.Generic;
@@ -15,12 +14,14 @@ namespace Core_ViGEm
         /// </summary>
         private class DS4Handler : DeviceHandler
         {
-            private readonly DualShock4Report _report = new DualShock4Report();
-
-            private static readonly List<DualShock4Axes> AxisIndexes = new List<DualShock4Axes>
+            private static readonly List<DualShock4Axis> AxisIndexes = new List<DualShock4Axis>
             {
-                DualShock4Axes.LeftThumbX, DualShock4Axes.LeftThumbY, DualShock4Axes.RightThumbX, DualShock4Axes.RightThumbY,
-                DualShock4Axes.LeftTrigger, DualShock4Axes.RightTrigger
+                DualShock4Axis.LeftThumbX, DualShock4Axis.LeftThumbY, DualShock4Axis.RightThumbX, DualShock4Axis.RightThumbY
+            };
+
+            private static readonly List<DualShock4Slider> SliderIndexes = new List<DualShock4Slider>
+            {
+                DualShock4Slider.LeftTrigger, DualShock4Slider.RightTrigger
             };
 
             protected override List<string> axisNames { get; set; } = new List<string>
@@ -28,27 +29,30 @@ namespace Core_ViGEm
                 "LX", "LY", "RX", "RY", "L2 (LT)", "R2 (RT)"
             };
 
-            private static readonly List<DualShock4Buttons> ButtonIndexes = new List<DualShock4Buttons>
+            private static readonly List<DualShock4Button> ButtonIndexes = new List<DualShock4Button>
             {
-                DualShock4Buttons.Cross, DualShock4Buttons.Circle, DualShock4Buttons.Square, DualShock4Buttons.Triangle,
-                DualShock4Buttons.ShoulderLeft, DualShock4Buttons.ShoulderRight, DualShock4Buttons.ThumbLeft, DualShock4Buttons.ThumbRight,
-                DualShock4Buttons.Share, DualShock4Buttons.Options,
-                DualShock4Buttons.TriggerLeft, DualShock4Buttons.TriggerRight
+                DualShock4Button.Cross, DualShock4Button.Circle, DualShock4Button.Square, DualShock4Button.Triangle,
+                DualShock4Button.ShoulderLeft, DualShock4Button.ShoulderRight, DualShock4Button.ThumbLeft, DualShock4Button.ThumbRight,
+                DualShock4Button.Share, DualShock4Button.Options,
+                DualShock4Button.TriggerLeft, DualShock4Button.TriggerRight
             };
 
-            private static readonly List<DualShock4SpecialButtons> SpecialButtonIndexes = new List<DualShock4SpecialButtons>
+            // Bit values within the special-buttons byte passed to SetSpecialButtonsFull
+            private static readonly List<int> SpecialButtonBits = new List<int>
             {
-                DualShock4SpecialButtons.Ps, DualShock4SpecialButtons.Touchpad
+                DualShock4SpecialButton.Ps.Value, DualShock4SpecialButton.Touchpad.Value
             };
+
+            private byte _specialButtonState;
 
             protected override List<string> buttonNames { get; set; } = new List<string>
             {
                 "Cross", "Circle", "Square", "Triangle", "L1", "R1", "LS", "RS", "Share", "Options", "L2", "R2", "PS", "TouchPad Click"
             };
 
-            private static readonly List<DualShock4DPadValues> PovIndexes = new List<DualShock4DPadValues>
+            private static readonly List<DualShock4DPadDirection> PovIndexes = new List<DualShock4DPadDirection>
             {
-                DualShock4DPadValues.North, DualShock4DPadValues.East, DualShock4DPadValues.South, DualShock4DPadValues.West
+                DualShock4DPadDirection.North, DualShock4DPadDirection.East, DualShock4DPadDirection.South, DualShock4DPadDirection.West
             };
 
             private readonly Dictionary<string, int> _povAxisStates = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
@@ -64,17 +68,17 @@ namespace Core_ViGEm
                 {3, ("x", -1)}
             };
 
-            private static readonly Dictionary<(int x, int y), DualShock4DPadValues> AxisStatesToDpadValue = new Dictionary<(int x, int y), DualShock4DPadValues>()
+            private static readonly Dictionary<(int x, int y), DualShock4DPadDirection> AxisStatesToDpadValue = new Dictionary<(int x, int y), DualShock4DPadDirection>()
             {
-                {(0, 0), DualShock4DPadValues.None},
-                {(0, -1), DualShock4DPadValues.North},
-                {(1, -1), DualShock4DPadValues.Northeast},
-                {(1, 0), DualShock4DPadValues.East},
-                {(1, 1), DualShock4DPadValues.Southeast},
-                {(0, 1), DualShock4DPadValues.South},
-                {(-1, 1), DualShock4DPadValues.Southwest},
-                {(-1, 0), DualShock4DPadValues.West},
-                {(-1, -1), DualShock4DPadValues.Northwest}
+                {(0, 0), DualShock4DPadDirection.None},
+                {(0, -1), DualShock4DPadDirection.North},
+                {(1, -1), DualShock4DPadDirection.Northeast},
+                {(1, 0), DualShock4DPadDirection.East},
+                {(1, 1), DualShock4DPadDirection.Southeast},
+                {(0, 1), DualShock4DPadDirection.South},
+                {(-1, 1), DualShock4DPadDirection.Southwest},
+                {(-1, 0), DualShock4DPadDirection.West},
+                {(-1, -1), DualShock4DPadDirection.Northwest}
             };
 
             public DS4Handler(DeviceClassDescriptor descriptor, int index) : base(descriptor, index)
@@ -83,8 +87,9 @@ namespace Core_ViGEm
 
             protected override void AcquireTarget()
             {
-                target = new DualShock4Controller(_client);
+                target = _client.CreateDualShock4Controller();
                 target.Connect();
+                target.AutoSubmitReport = true;
             }
 
             protected override void RelinquishTarget()
@@ -96,22 +101,34 @@ namespace Core_ViGEm
             protected override void SetAxisState(BindingDescriptor bindingDescriptor, int state)
             {
                 var inputId = bindingDescriptor.Index;
-                _report.SetAxis(AxisIndexes[inputId], (byte)((state + 32768) / 256));
-                SendReport();
+                var ds4 = (IDualShock4Controller)target;
+                var byteState = (byte)((state + 32768) / 256);
+                if (inputId > 3)
+                {
+                    ds4.SetSliderValue(SliderIndexes[inputId - 4], byteState);
+                }
+                else
+                {
+                    ds4.SetAxisValue(AxisIndexes[inputId], byteState);
+                }
             }
 
             protected override void SetButtonState(BindingDescriptor bindingDescriptor, int state)
             {
                 var inputId = bindingDescriptor.Index;
+                var ds4 = (IDualShock4Controller)target;
                 if (inputId >= ButtonIndexes.Count)
                 {
-                    _report.SetSpecialButtonState(SpecialButtonIndexes[inputId - ButtonIndexes.Count], state != 0);
+                    var bit = SpecialButtonBits[inputId - ButtonIndexes.Count];
+                    _specialButtonState = (byte)(state != 0
+                        ? _specialButtonState | bit
+                        : _specialButtonState & ~bit);
+                    ds4.SetSpecialButtonsFull(_specialButtonState);
                 }
                 else
                 {
-                    _report.SetButtonState(ButtonIndexes[inputId], state != 0);
+                    ds4.SetButtonState(ButtonIndexes[inputId], state != 0);
                 }
-                SendReport();
             }
 
             protected override void SetPovState(BindingDescriptor bindingDescriptor, int state)
@@ -123,17 +140,8 @@ namespace Core_ViGEm
                 if (axisState == newState) return;
                 _povAxisStates[mapping.Axis] = newState;
 
-                var buttons = (int)_report.Buttons;
-                buttons &= ~15; // Clear all the Dpad bits
-                
-                buttons |= (int)AxisStatesToDpadValue[(_povAxisStates["x"], _povAxisStates["y"])];
-                _report.Buttons = (ushort) buttons;
-                SendReport();
-            }
-
-            private void SendReport()
-            {
-                ((DualShock4Controller)target).SendReport(_report);
+                var direction = AxisStatesToDpadValue[(_povAxisStates["x"], _povAxisStates["y"])];
+                ((IDualShock4Controller)target).SetDPadDirection(direction);
             }
         }
     }

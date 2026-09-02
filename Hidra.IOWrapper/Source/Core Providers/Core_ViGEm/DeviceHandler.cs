@@ -23,7 +23,7 @@ namespace Core_ViGEm
             protected DeviceClassDescriptor deviceClassDescriptor;
             protected int deviceId;
             protected bool isAcquired;
-            protected ViGEmTarget target;
+            protected IVirtualGamepad target;
 
             protected abstract List<string> axisNames { get; set; }
             protected static readonly List<BindingCategory> axisCategories = new List<BindingCategory>
@@ -199,7 +199,8 @@ namespace Core_ViGEm
             {
                 if (disposing)
                 {
-                    target?.Dispose();
+                    target?.Disconnect();
+                    (target as IDisposable)?.Dispose();
                 }
             }
 
