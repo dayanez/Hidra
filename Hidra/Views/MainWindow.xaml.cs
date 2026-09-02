@@ -189,6 +189,16 @@ namespace Hidra.Views
             ReloadProfileTree();
         }
 
+        private async void SetAutoSwitchExecutable(object sender, RoutedEventArgs e)
+        {
+            if (!GetSelectedItem(out var profileItem)) return;
+            var dialog = new StringDialog("Auto-switch executable", "Executable file name (e.g. game.exe), blank to disable", profileItem.Profile.AutoSwitchExecutable);
+            var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || !result.Value) return;
+
+            profileItem.Profile.SetAutoSwitchExecutable(dialog.Value);
+        }
+
         private async void CopyProfile(object sender, RoutedEventArgs e)
         {
             if (!GetSelectedItem(out var profileItem)) return;

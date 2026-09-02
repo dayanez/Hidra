@@ -20,6 +20,11 @@ namespace Hidra.Core.Models
         public string Title { get; set; }
         [XmlAttribute]
         public Guid Guid { get; set; }
+        /// <summary>
+        /// If set, this profile is automatically activated whenever a process with this
+        /// executable file name (e.g. "game.exe") becomes the focused window.
+        /// </summary>
+        public string AutoSwitchExecutable { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Mapping> Mappings { get; set; }
 
@@ -89,6 +94,13 @@ namespace Hidra.Core.Models
         public bool Rename(string title)
         {
             Title = title;
+            Context.ContextChanged();
+            return true;
+        }
+
+        public bool SetAutoSwitchExecutable(string executable)
+        {
+            AutoSwitchExecutable = string.IsNullOrWhiteSpace(executable) ? null : executable.Trim();
             Context.ContextChanged();
             return true;
         }

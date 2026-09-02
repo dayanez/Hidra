@@ -29,6 +29,7 @@ namespace Hidra.Core
         [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; }
         [XmlIgnore] public PluginsManager PluginManager { get; set; }
         [XmlIgnore] public BindingManager BindingManager { get; set; }
+        [XmlIgnore] public ProcessProfileSwitcher ProcessProfileSwitcher { get; set; }
 
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
@@ -62,6 +63,7 @@ namespace Hidra.Core
             SubscriptionsManager = new SubscriptionsManager(this);
             PluginManager = new PluginsManager(PluginPath);
             BindingManager = new BindingManager(this);
+            ProcessProfileSwitcher = new ProcessProfileSwitcher(this);
         }
 
         private void SetCommandLineOptions()
@@ -162,6 +164,7 @@ namespace Hidra.Core
 
         public void Dispose()
         {
+            ProcessProfileSwitcher?.Dispose();
             SubscriptionsManager.Dispose();
             IOController?.Dispose();
         }

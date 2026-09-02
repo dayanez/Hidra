@@ -187,6 +187,12 @@
                                         Click="RenameProfile">
                                     <materialDesign:PackIcon Kind="Edit" Width="20" Height="20"/>
                                 </Button>
+                                <Button ToolTip="Auto-switch to this profile when an executable gets focus"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Foreground="{StaticResource MaterialDesign.Brush.Primary.Foreground}"
+                                        Click="SetAutoSwitchExecutable">
+                                    <materialDesign:PackIcon Kind="ApplicationCog" Width="20" Height="20"/>
+                                </Button>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
                                 <Button ToolTip="Activate profile"
