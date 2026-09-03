@@ -32,11 +32,15 @@ the two disagree.
 
 ### Tests
 
-`Hidra.Tests` is not part of `Hidra.sln` and does not currently build: it
-still targets .NET Framework 4.5.2 from before the .NET 8 port, and needs the
-same porting work the rest of the solution already went through. Don't assume
-it runs. If you're asked to fix or extend it, that porting is the
-prerequisite, not a config tweak.
+Run the suite:
+
+```
+dotnet test Hidra.sln
+```
+
+`Hidra.Tests` is part of `Hidra.sln` and CI-gated (`.github/workflows/build.yml`
+runs it after every build). NUnit, SDK-style project (`net8.0-windows`, matching
+the other three real projects).
 
 ## Directory Structure
 
@@ -56,7 +60,7 @@ prerequisite, not a config tweak.
   in-repo; see its own `README.md`/`CHANGELOG.md` for the parts of its
   documentation that describe pre-fork history and are intentionally left
   as-is.
-- `Hidra.Tests/`: not currently buildable (see above).
+- `Hidra.Tests/`: NUnit tests for `Hidra.Core`/`Hidra.Plugins` (see `### Tests` above).
 
 ## Security-Sensitive Areas
 
@@ -79,8 +83,8 @@ into two sentences, or use a comma, colon, or parentheses.
 Commit message conventions are in `CONTRIBUTING.md` (present tense,
 imperative mood, first line under 72 characters, explain *why*).
 
-There's no CI on this repo yet and it's an early, actively-changing fork.
-Commit locally when asked to, and leave pushing to the user by default.
+This is an early, actively-changing fork. Commit locally when asked to, and
+leave pushing to the user by default.
 
 ### Issue and PR Guidelines
 

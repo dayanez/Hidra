@@ -43,6 +43,12 @@ namespace Hidra.Tests.UtilityTests.HelperTests
         [TestCase(Constants.AxisMaxValue, 70, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (70): Max returns Max")]
         [TestCase(Constants.AxisMaxValue, 80, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (80): Max returns Max")]
         [TestCase(Constants.AxisMaxValue, 90, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (90): Max returns Max")]
+        // At 100%, the entire range is the dead zone, so unlike 10-90%, even Max/Min collapses to
+        // 0 rather than passing through unchanged. Regression test for a divide-by-zero
+        // (AxisMaxValue / 0 -> Infinity -> NaN -> int.MinValue -> clamped to -32768) that used to
+        // make max-magnitude input return the *opposite* extreme instead of 0 at exactly 100%.
+        [TestCase(Constants.AxisMaxValue, 100, ExpectedResult = 0, TestName = "DeadZoneHelper (100): Max returns 0 (full dead zone)")]
+        [TestCase(Constants.AxisMinValue, 100, ExpectedResult = 0, TestName = "DeadZoneHelper (100): Min returns 0 (full dead zone)")]
 
         [TestCase(Constants.AxisMinValue, 10, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (10): Min returns Min")]
         [TestCase(Constants.AxisMinValue, 20, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (20): Min returns Min")]

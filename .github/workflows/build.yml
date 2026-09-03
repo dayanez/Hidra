@@ -24,3 +24,6 @@ jobs:
 
       - name: Build
         run: dotnet build Hidra.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Hidra.sln --configuration Release --no-build

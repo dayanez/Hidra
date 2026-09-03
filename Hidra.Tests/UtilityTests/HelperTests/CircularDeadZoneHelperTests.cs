@@ -110,5 +110,25 @@ namespace Hidra.Tests.UtilityTests.HelperTests
             var result = helper.ApplyRangeDeadZone(new short[] { x, y });
             Assert.AreEqual(new short[] { x, y }, result);
         }
+
+        [TestCase(101, ExpectedResult = 100, TestName = "CircularDeadZoneHelper (101): Percentages over 100 should clamp to 100")]
+        [TestCase(-1, ExpectedResult = 0, TestName = "CircularDeadZoneHelper (-1): Percentages below 0 should clamp to 0")]
+        public long CircularDeadZoneValidationTest(int percentage)
+        {
+            var helper = new CircularDeadZoneHelper();
+            helper.Percentage = percentage;
+            return helper.Percentage;
+        }
+
+        // Regression test: before Percentage was clamped, a negative value made _deadzoneRadius
+        // negative, and for a centered stick (length 0) the scale calculation hit 0 * Infinity =
+        // NaN, which could report a phantom deflection for input that was actually centered.
+        [Test]
+        public void CircularDeadZone_NegativePercentage_CenteredStickStaysZero()
+        {
+            var helper = new CircularDeadZoneHelper { Percentage = -50 };
+            var result = helper.ApplyRangeDeadZone(new short[] { 0, 0 });
+            Assert.AreEqual(new short[] { 0, 0 }, result);
+        }
     }
 }
