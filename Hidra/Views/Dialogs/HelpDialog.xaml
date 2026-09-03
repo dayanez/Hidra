@@ -16,8 +16,8 @@
         </Grid.RowDefinitions>
         <TextBlock Text="Help" Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0 0 0 8"/>
         <TextBlock TextWrapping="Wrap" Grid.Row="1">
-            Hidra is a fork of Universal Control Remapper (UCR), remapping input from keyboards,
-            mice, and controllers to virtual output devices.
+            Hidra remaps input from keyboards, mice, and controllers - regardless of manufacturer -
+            to virtual output devices.
         </TextBlock>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2">
             <Button IsCancel="True" Margin="8 4 0 0" Style="{DynamicResource MaterialDesignFlatButton}"

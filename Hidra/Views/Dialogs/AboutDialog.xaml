@@ -17,14 +17,14 @@
         </Grid.RowDefinitions>
         <TextBlock Text="About" Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0 0 0 8"/>
         <StackPanel Grid.Row="1">
-            <TextBlock Margin="0,0,0,5" TextWrapping="Wrap">Hidra is a fork of Universal Control Remapper, originally created by evilC and Snoothy (HidWizards).</TextBlock>
+            <TextBlock Margin="0,0,0,5" TextWrapping="Wrap">A modern, brand-agnostic HID remapping tool. Hidra descends from Universal Control Remapper, originally created by evilC and Snoothy (HidWizards).</TextBlock>
             <TextBlock Margin="0,0,0,5" Name="VersionTextBlock"/>
 
             <TextBlock Margin="0,5,0,5">License</TextBlock>
         </StackPanel>
-        <Border Grid.Row="2" BorderThickness="1" BorderBrush="Black">
+        <Border Grid.Row="2" BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignDivider}">
             <ScrollViewer>
-            <TextBlock Padding="2" TextWrapping="Wrap" Background="White">
+            <TextBlock Padding="4" TextWrapping="Wrap">
                 MIT License
                 <LineBreak/>
                 <LineBreak/>

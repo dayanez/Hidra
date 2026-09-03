@@ -78,7 +78,7 @@ namespace HidWizards.IOWrapper.DataTransferObjects
     {
         /// <summary>
         /// Uniquely identifies a Binding - each subscriber can only be subscribed to one input / output
-        /// In an application such as UCR, each binding (GuiControl) can only be bound to one input / output
+        /// In an application such as Hidra, each binding (GuiControl) can only be bound to one input / output
         /// </summary>
         public Guid SubscriberGuid { get; set; }
 

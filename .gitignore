@@ -205,7 +205,7 @@ obj
 # Sonarqube
 .sonarqube/
 
-# UCR
+# Hidra
 context.xml
 
 # Rider

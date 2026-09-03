@@ -50,7 +50,7 @@ namespace HidWizards.IOWrapper.DataTransferObjects
         /// Callback to be fired when this Input changes state
         /// </summary>
         //public dynamic Callback { get; set; }
-        // Disabled, as enabling this breaks a bunch of stuff in UCR
+        // Disabled, as enabling this breaks a bunch of stuff in Hidra
         public Action<short> Callback { get; set; }
 
         public InputSubscriptionRequest Clone()

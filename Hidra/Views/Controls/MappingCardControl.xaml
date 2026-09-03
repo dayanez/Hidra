@@ -20,8 +20,7 @@
     <GroupBox Width="auto"
               Header="{Binding}"
               Style="{StaticResource MaterialDesignCardGreyGroupBox}"
-              Margin="4 6 4 6"
-              Background="LightGray">
+              Margin="4 6 4 6">
         <GroupBox.HeaderTemplate>
             <DataTemplate>
                 <Grid>

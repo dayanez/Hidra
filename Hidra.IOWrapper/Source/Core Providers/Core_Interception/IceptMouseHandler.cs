@@ -83,11 +83,11 @@ namespace Core_Interception
                                 {
                                     if ((stroke.mouse.state & 0x400) != 0x400 && (stroke.mouse.state & 0x800) != 0x800)
                                     {
-                                        //Debug.WriteLine("UCR| Removing rolling flag from stroke");
+                                        //Debug.WriteLine("Hidra| Removing rolling flag from stroke");
                                         stroke.mouse.rolling = 0;
                                     }
                                 }
-                                //Debug.WriteLine($"UCR| Removing flag {btnState.Flag} from stoke, leaving state {stroke.mouse.state}");
+                                //Debug.WriteLine($"Hidra| Removing flag {btnState.Flag} from stoke, leaving state {stroke.mouse.state}");
                             }
                         }
                     }

@@ -93,7 +93,7 @@ namespace Core_Midi
         }
 
         // Converts an Axis in the range 0..127 to positive only 16-bit int
-        // ToDo: While UCR does not support AxisToButton for Unsigned axes, just report as positive
+        // ToDo: While Hidra does not support AxisToButton for Unsigned axes, just report as positive
         private int ConvertToUnsigned(int value)
         {
             return (int) (value * 258.00787401574803149606299212598);

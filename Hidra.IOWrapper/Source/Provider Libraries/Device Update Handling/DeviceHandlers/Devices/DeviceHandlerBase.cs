@@ -97,7 +97,7 @@ namespace Hidwizards.IOWrapper.Libraries.DeviceHandlers.Devices
             {
                 //ThreadPool.QueueUserWorkItem(cb => BindModeUpdate(this, bindModeUpdate));
                 // Disabled, as does not seem to work while SubReq's Callback property is dynamic
-                // Switching it to Action<int> breaks loads of stuff in UCR, so for now, just keep using ThreadPool
+                // Switching it to Action<int> breaks loads of stuff in Hidra, so for now, just keep using ThreadPool
                 Task.Factory.StartNew(() => BindModeUpdate(this, bindModeUpdate));
             }
         }

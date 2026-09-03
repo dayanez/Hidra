@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Media;
 using Hidra.Core;
 using Hidra.Core.Utilities;
 using Hidra.Utilities;
 using Hidra.Views;
+using MaterialDesignThemes.Wpf;
 using Application = System.Windows.Application;
 
 namespace Hidra
@@ -24,6 +26,7 @@ namespace Hidra
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            ApplyHidraTheme();
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
             DispatcherUnhandledException += App_DispatcherUnhandledException;
 
@@ -46,6 +49,22 @@ namespace Hidra
                 SendArgs(string.Join(";", e.Args));
                 Current.Shutdown();
             }
+        }
+
+        // Night theme with blue highlights: derive a full Material Design dark palette from Hidra's
+        // brand blue, then deepen the background/surfaces to a navy-black instead of stock neutral grey.
+        private static void ApplyHidraTheme()
+        {
+            var paletteHelper = new PaletteHelper();
+            var theme = Theme.Create(
+                BaseTheme.Dark,
+                (Color)ColorConverter.ConvertFromString("#3D7EF6"),
+                (Color)ColorConverter.ConvertFromString("#63C7FF"));
+
+            theme.Background = (Color)ColorConverter.ConvertFromString("#0B0F17");
+            theme.Foreground = (Color)ColorConverter.ConvertFromString("#E7ECF5");
+
+            paletteHelper.SetTheme(theme);
         }
 
         private void InitializeApp()

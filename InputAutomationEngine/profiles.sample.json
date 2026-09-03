@@ -1,0 +1,48 @@
+{
+  "Profiles": [
+    {
+      "ProcessTarget": "*",
+      "KeyMappings": [
+        {
+          "Key": "F13",
+          "Suppress": true,
+          "Action": {
+            "Type": "RunProcess",
+            "Value": "notepad.exe",
+            "Arguments": null
+          }
+        },
+        {
+          "Key": "F14",
+          "Suppress": true,
+          "Action": {
+            "Type": "SystemCommand",
+            "Value": "Lock"
+          }
+        }
+      ],
+      "ControllerMappings": [
+        { "Button": "A", "Action": { "Type": "RunProcess", "Value": "cmd.exe" } },
+        { "Button": "B", "Action": { "Type": "RunProcess", "Value": "wt.exe" } },
+        { "Button": "X", "Action": { "Type": "OpenUrl", "Value": "https://stackoverflow.com" } },
+        { "Button": "Y", "Action": { "Type": "OpenUrl", "Value": "https://github.com" } },
+        { "Button": "LeftShoulder", "Action": { "Type": "SystemCommand", "Value": "VolumeDown" } },
+        { "Button": "RightShoulder", "Action": { "Type": "SystemCommand", "Value": "VolumeUp" } }
+      ]
+    },
+    {
+      "ProcessTarget": "chrome.exe",
+      "KeyMappings": [
+        {
+          "Key": "F13",
+          "Suppress": true,
+          "Action": { "Type": "SendKeys", "Value": "Ctrl+T" }
+        }
+      ],
+      "ControllerMappings": [
+        { "Button": "A", "Action": { "Type": "SendKeys", "Value": "Ctrl+T" } },
+        { "Button": "B", "Action": { "Type": "SendKeys", "Value": "Ctrl+W" } }
+      ]
+    }
+  ]
+}

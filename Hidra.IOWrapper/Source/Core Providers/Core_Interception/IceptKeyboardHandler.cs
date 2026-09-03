@@ -61,7 +61,7 @@ namespace Core_Interception
                 }
             }
 
-            // state should now be 0 for pressed and 1 for released. Convert to UCR format (pressed == 1)
+            // state should now be 0 for pressed and 1 for released. Convert to Hidra's format (pressed == 1)
             state = (ushort)(1 - state);
             code -= 1;  // Index is 0-based
             return new[] { new BindingUpdate { Binding = new BindingDescriptor() { Type = BindingType.Button, Index = code}, Value = state } };
