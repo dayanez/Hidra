@@ -40,6 +40,7 @@ namespace Core_RawInputHook
         private SubscriptionHandler _keyboardSubscriptionHandler;
         private SubscriptionHandler _mouseSubscriptionHandler;
 
+        private Thread _hookThread;
         private uint _hookThreadId;
         private IntPtr _keyboardHookHandle;
         private IntPtr _mouseHookHandle;
@@ -153,8 +154,8 @@ namespace Core_RawInputHook
             _mouseSubscriptionHandler = new SubscriptionHandler(_mouseDescriptor, (sender, args) => { }, CallbackHandler);
 
             var ready = new ManualResetEventSlim(false);
-            var hookThread = new Thread(() => HookThreadProc(ready)) { IsBackground = true, Name = "Hidra RawInputHook" };
-            hookThread.Start();
+            _hookThread = new Thread(() => HookThreadProc(ready)) { IsBackground = true, Name = "Hidra RawInputHook" };
+            _hookThread.Start();
             // Wait for setup to finish before returning, so IsLive is accurate as soon as the
             // constructor returns.
             ready.Wait(TimeSpan.FromSeconds(2));
@@ -187,6 +188,8 @@ namespace Core_RawInputHook
             if (_keyboardHookHandle != IntPtr.Zero) HookNative.UnhookWindowsHookEx(_keyboardHookHandle);
             if (_mouseHookHandle != IntPtr.Zero) HookNative.UnhookWindowsHookEx(_mouseHookHandle);
             if (_windowHandle != IntPtr.Zero) WindowNative.DestroyWindow(_windowHandle);
+
+            IsLive = false;
         }
 
         private IntPtr CreateMessageWindow()
@@ -429,6 +432,9 @@ namespace Core_RawInputHook
             if (_hookThreadId != 0)
             {
                 HookNative.PostThreadMessage(_hookThreadId, HookNative.WM_QUIT, IntPtr.Zero, IntPtr.Zero);
+                // Wait for the hook thread's message loop to actually exit and unhook before
+                // returning, so IsLive is accurate as soon as Dispose() returns.
+                _hookThread?.Join(TimeSpan.FromSeconds(2));
             }
         }
 
