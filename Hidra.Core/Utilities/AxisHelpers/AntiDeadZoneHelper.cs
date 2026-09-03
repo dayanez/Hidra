@@ -59,8 +59,7 @@ namespace Hidra.Core.Utilities.AxisHelpers
             var adjustedValue = _antiDeadzoneStart + (wideVal * _scaleFactor);
             var newValue = (int) Math.Round(adjustedValue * sign);
             
-            // TODO: Negative values can go up to -32777 (9 over), can this be improved?
-            if (newValue < Constants.AxisMinValue) newValue = Constants.AxisMinValue;   
+            if (newValue < Constants.AxisMinValue) newValue = Constants.AxisMinValue;
             return (short) newValue;
         }
     }

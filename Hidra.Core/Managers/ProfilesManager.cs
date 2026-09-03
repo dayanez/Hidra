@@ -42,7 +42,7 @@ namespace Hidra.Core.Managers
         {
             var newProfile = Context.DeepXmlClone<Profile>(profile);
             newProfile.Title = title;
-            newProfile.Guid = Guid.NewGuid();
+            RemapGuids(newProfile);
             newProfile.PostLoad(_context, profile.ParentProfile);
 
             if (profile.ParentProfile != null)
@@ -54,13 +54,53 @@ namespace Hidra.Core.Managers
                 _profiles.Add(newProfile);
             }
 
-            // TODO Fix Configuration Guid and referenced DeviceBinding Guids
-            //newProfile.InputDeviceConfigurations.ForEach(configuration => configuration.Guid = Guid.NewGuid());
-            //newProfile.OutputDeviceConfigurations.ForEach(configuration => configuration.Guid = Guid.NewGuid());
-
             _context.ContextChanged();
 
             return true;
+        }
+
+        // The XML clone preserves every persisted Guid verbatim, so without this the copy would
+        // carry the same Profile.Guid and DeviceConfiguration.Guid values as the original
+        // throughout the whole copied subtree (including nested child profiles). That's not just
+        // cosmetic: Profile.IsActive() matches by Guid rather than by reference, so a duplicated
+        // child profile would report itself active whenever its original counterpart is. Device
+        // bindings reference their device configuration by Guid too, so each configuration's new
+        // Guid is tracked and every binding pointing at it (anywhere in the copied subtree) is
+        // rewritten to match; a binding that instead points at a configuration on an ancestor
+        // profile (outside the copied subtree) is left alone, since that configuration was never
+        // duplicated.
+        private static void RemapGuids(Profile profile)
+        {
+            var configurationGuidMap = new Dictionary<Guid, Guid>();
+            RemapProfileAndConfigurationGuids(profile, configurationGuidMap);
+            RemapDeviceBindingGuids(profile, configurationGuidMap);
+        }
+
+        private static void RemapProfileAndConfigurationGuids(Profile profile, Dictionary<Guid, Guid> configurationGuidMap)
+        {
+            profile.Guid = Guid.NewGuid();
+
+            foreach (var configuration in profile.InputDeviceConfigurations.Concat(profile.OutputDeviceConfigurations))
+            {
+                var newGuid = Guid.NewGuid();
+                configurationGuidMap[configuration.Guid] = newGuid;
+                configuration.Guid = newGuid;
+            }
+
+            profile.ChildProfiles.ForEach(childProfile => RemapProfileAndConfigurationGuids(childProfile, configurationGuidMap));
+        }
+
+        private static void RemapDeviceBindingGuids(Profile profile, Dictionary<Guid, Guid> configurationGuidMap)
+        {
+            foreach (var deviceBinding in profile.Mappings.SelectMany(mapping => mapping.DeviceBindings))
+            {
+                if (configurationGuidMap.TryGetValue(deviceBinding.DeviceConfigurationGuid, out var newGuid))
+                {
+                    deviceBinding.DeviceConfigurationGuid = newGuid;
+                }
+            }
+
+            profile.ChildProfiles.ForEach(childProfile => RemapDeviceBindingGuids(childProfile, configurationGuidMap));
         }
 
         /// <summary>
