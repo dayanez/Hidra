@@ -92,7 +92,12 @@ namespace Hidra.Core.Managers
 
         private static void RemapDeviceBindingGuids(Profile profile, Dictionary<Guid, Guid> configurationGuidMap)
         {
-            foreach (var deviceBinding in profile.Mappings.SelectMany(mapping => mapping.DeviceBindings))
+            // Mapping.DeviceBindings holds the input side; each plugin's own Outputs list (not
+            // Mapping.DeviceBindings) holds the output side, and needs remapping too.
+            var inputBindings = profile.Mappings.SelectMany(mapping => mapping.DeviceBindings);
+            var outputBindings = profile.Mappings.SelectMany(mapping => mapping.Plugins).SelectMany(plugin => plugin.Outputs);
+
+            foreach (var deviceBinding in inputBindings.Concat(outputBindings))
             {
                 if (configurationGuidMap.TryGetValue(deviceBinding.DeviceConfigurationGuid, out var newGuid))
                 {
