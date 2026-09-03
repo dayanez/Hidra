@@ -69,6 +69,24 @@ namespace Hidra.Views
         }
 
         /// <summary>
+        /// Called on an actual Windows shutdown/logoff (see App.xaml.cs's SystemEvents.SessionEnding
+        /// handler). Saves and exits immediately rather than going through the normal Closing flow's
+        /// hide-to-tray behavior or its "save changes?" prompt: the OS expects processes to close
+        /// promptly during shutdown, and a modal dialog nobody's there to answer risks the process
+        /// being force-killed before anything gets saved.
+        /// </summary>
+        public void ExitForShutdown()
+        {
+            _exitRequested = true;
+            if (Context.IsNotSaved)
+            {
+                Context.SaveContext();
+            }
+            WindowCloseState = CloseState.ForceClose;
+            Close();
+        }
+
+        /// <summary>
         /// AddHook Handle WndProc messages in WPF
         /// This cannot be done in a Window's constructor as a handle window handle won't at that point, so there won't be a HwndSource.
         /// </summary>

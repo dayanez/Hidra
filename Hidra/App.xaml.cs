@@ -10,6 +10,7 @@ using Hidra.Core.Utilities;
 using Hidra.Utilities;
 using Hidra.Views;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using Application = System.Windows.Application;
 
 namespace Hidra
@@ -28,6 +29,7 @@ namespace Hidra
             ApplyHidraTheme();
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
             DispatcherUnhandledException += App_DispatcherUnhandledException;
+            SystemEvents.SessionEnding += SystemEvents_OnSessionEnding;
 
             mutex = new SingleGlobalInstance(); 
             if (mutex.HasHandle && GetProcesses().Length <= 1)
@@ -163,6 +165,17 @@ namespace Hidra
         {
             mutex.Dispose();
             context?.Dispose();
+        }
+
+        // Closing the window normally hides it to the tray (see MainWindow's Closing handler), but
+        // an actual Windows shutdown/logoff needs a real exit: if Hidra just hides again here,
+        // Windows can force-kill the process before anything gets saved.
+        private void SystemEvents_OnSessionEnding(object sender, SessionEndingEventArgs e)
+        {
+            if (Current.MainWindow is MainWindow mainWindow)
+            {
+                mainWindow.ExitForShutdown();
+            }
         }
 
         private void App_OnExit(object sender, ExitEventArgs e)

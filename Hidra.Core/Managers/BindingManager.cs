@@ -36,6 +36,7 @@ namespace Hidra.Core.Managers
         private DispatcherTimer BindingTimer;
         private readonly object bindmodeLock = new object();
         private bool bindmodeActive;
+        private Dispatcher _uiDispatcher;
 
         public delegate void EndBindModeDelegate(DeviceBinding deviceBinding);
         public event EndBindModeDelegate EndBindModeHandler;
@@ -49,6 +50,10 @@ namespace Hidra.Core.Managers
 
         public void BeginBindMode(DeviceBinding deviceBinding)
         {
+            // Captured here because this is always called on the UI thread, unlike InputChanged
+            // below, which the active input provider calls from its own capture thread.
+            _uiDispatcher = Dispatcher.CurrentDispatcher;
+
             if (_deviceConfigurationList.Count > 0) EndBindMode();
             _deviceBinding = deviceBinding;
             foreach (var deviceConfiguration in deviceBinding.Profile.GetDeviceConfigurationList(deviceBinding.DeviceIoType))
@@ -110,8 +115,18 @@ namespace Hidra.Core.Managers
             };
         }
 
+        // Called directly from the active input provider's own capture thread (e.g. the raw
+        // input hook thread), not the UI thread. Everything this touches - BindingTimer,
+        // _deviceBinding's bound properties - belongs to the UI thread, so the actual work is
+        // marshaled over before doing anything with it.
         private void InputChanged(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor, BindingReport bindingReport, short value)
         {
+            _uiDispatcher.Invoke(() => InputChangedOnUiThread(providerDescriptor, deviceDescriptor, bindingReport, value));
+        }
+
+        private void InputChangedOnUiThread(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor, BindingReport bindingReport, short value)
+        {
+            if (!bindmodeActive) return;
             if (!DeviceBinding.MapCategory(bindingReport.Category).Equals(_deviceBinding.DeviceBindingCategory)) return;
             if (!IsInputValid(bindingReport.Category, value)) return;
 
