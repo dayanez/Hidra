@@ -3,6 +3,7 @@
 # Hidra
 
 [![Build](https://github.com/dayanez/Hidra/actions/workflows/build.yml/badge.svg)](https://github.com/dayanez/Hidra/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/dayanez/Hidra)](https://github.com/dayanez/Hidra/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Hidra remaps your keyboard and mouse, entirely in software.** Turn any key or button into a
@@ -43,16 +44,17 @@ without installing anything at the driver level, on hardware from any manufactur
 
 ## Getting started
 
-Requires the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (or Visual Studio
-2022 17.8+ with the ".NET desktop development" workload). There's nothing else to install.
+Download the latest build from [Releases](https://github.com/dayanez/Hidra/releases): it's a
+self-contained zip, no .NET runtime install required, just unzip and run `Hidra.exe`.
+
+To build from source instead, you'll need the
+[.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (or Visual Studio 2022 17.8+ with
+the ".NET desktop development" workload). There's nothing else to install.
 
 ```
 dotnet build Hidra.sln
 dotnet run --project Hidra\Hidra.csproj
 ```
-
-Hidra isn't packaged as a standalone release yet, so building from source is currently the only
-way to run it.
 
 ## Current status
 
@@ -60,10 +62,6 @@ This is an active, in-progress fork, not a finished product yet. Working today:
 
 - Driver-free keyboard and mouse capture and output, via a single provider (`Core_RawInputHook`)
 - The full remapping engine, plugin system, and WPF UI described above
-
-Not working yet:
-
-- `Hidra.Tests` doesn't build (still targets an old .NET Framework version from before this fork)
 
 Out of scope, on purpose, not a gap to be filled: Hidra does not support game controllers,
 gamepads, or joysticks, as input or output. The original project this forked from
@@ -79,6 +77,12 @@ Hidra is a .NET 8 WPF app. The remapping engine lives in `Hidra.Core`, built-in 
 [IOWrapper](https://github.com/evilC/IOWrapper)). See `AGENTS.md` for the full directory
 breakdown, and `SECURITY.md` for why input-capture code here gets held to a higher bar than a
 typical utility.
+
+## Contributing
+
+Bug reports, feature requests, and pull requests are welcome; see `CONTRIBUTING.md` for commit
+conventions. If you're touching anything that captures raw input or emits synthetic input, read
+`SECURITY.md` first. Community conduct is covered by `CODE_OF_CONDUCT.md`.
 
 ## Attribution and license
 
