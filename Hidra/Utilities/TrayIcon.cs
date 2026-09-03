@@ -18,13 +18,14 @@ namespace Hidra.Utilities
 
         private readonly NotifyIcon _notifyIcon;
         private readonly Icon _icon;
+        private readonly bool _ownsIcon;
 
         public event Action ShowRequested;
         public event Action ExitRequested;
 
         public TrayIcon()
         {
-            _icon = LoadAppIcon();
+            _icon = LoadAppIcon(out _ownsIcon);
 
             var showItem = new ToolStripMenuItem("Show Hidra");
             showItem.Click += (_, _) => ShowRequested?.Invoke();
@@ -63,10 +64,11 @@ namespace Hidra.Utilities
 
         // Extracted from the running exe's own icon resource rather than a loose .ico file, so
         // there's nothing extra to ship or keep in sync with the app icon.
-        private static Icon LoadAppIcon()
+        private static Icon LoadAppIcon(out bool ownsIcon)
         {
             var exePath = Process.GetCurrentProcess().MainModule?.FileName;
             var icon = exePath != null ? Icon.ExtractAssociatedIcon(exePath) : null;
+            ownsIcon = icon != null;
             return icon ?? SystemIcons.Application;
         }
 
@@ -99,7 +101,7 @@ namespace Hidra.Utilities
         {
             _notifyIcon.Visible = false;
             _notifyIcon.Dispose();
-            _icon.Dispose();
+            if (_ownsIcon) _icon.Dispose();
         }
     }
 }
