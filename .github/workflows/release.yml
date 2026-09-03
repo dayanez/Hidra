@@ -4,6 +4,9 @@ on:
   push:
     tags: ["hidra-v*"]
 
+permissions:
+  contents: write
+
 jobs:
   release:
     # Hidra is a WPF app; it only builds and runs on Windows.
