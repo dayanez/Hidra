@@ -82,7 +82,6 @@ namespace Hidra.IOWrapper.DataTransferObjects
         /// </summary>
         public Guid SubscriberGuid { get; set; }
 
-        // ToDo: Move?
         /// <summary>
         /// Allows grouping of subscriptions for easy toggling on / off sets of subscriptions
         /// </summary>

@@ -35,7 +35,7 @@ namespace Hidra.Views.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (DeviceBinding == null) return; // TODO Error logging
+            if (DeviceBinding == null) return;
             ReloadGui();
             HasLoaded = true;
         }

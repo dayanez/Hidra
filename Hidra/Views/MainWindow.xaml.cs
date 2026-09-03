@@ -113,7 +113,6 @@ namespace Hidra.Views
             return true;
         }
 
-        // TODO Deprecated, replace with property notifications
         private void ReloadProfileTree()
         {
             var profileTree = ProfileItem.GetProfileTree(Context.Profiles);
@@ -123,24 +122,24 @@ namespace Hidra.Views
 
         #region Profile Actions
 
-        private void ActivateProfile(object sender, RoutedEventArgs e)
+        private async void ActivateProfile(object sender, RoutedEventArgs e)
         {
             if (!GetSelectedItem(out var profileItem)) return;
             if (!Context.SubscriptionsManager.ActivateProfile(profileItem.Profile))
             {
-                // TODO Move to dialog
-                MessageBox.Show("The Profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                var dialog = new AlertDialog("Profile failed to activate!", "The Profile could not be activated, see the log for more details");
+                await DialogHost.Show(dialog, "RootDialog");
             }
         }
 
-        private void DeactivateProfile(object sender, RoutedEventArgs e)
+        private async void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (Context.ActiveProfile == null) return;
-            
+
             if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
             {
-                // TODO Move to dialog
-                MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                var dialog = new AlertDialog("Profile failed to deactivate!", "The active Profile could not be deactivated, see the log for more details");
+                await DialogHost.Show(dialog, "RootDialog");
             }
         }
 
