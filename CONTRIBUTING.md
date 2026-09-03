@@ -1,8 +1,8 @@
 # Contributing to Hidra
 
 This is a young fork, still being ported and modernized, with no formal review process yet. CI
-runs a build on every push and pull request (see `.github/workflows/build.yml`), but there's no
-required review or release process yet. In the meantime:
+builds and runs the test suite on every push and pull request (see
+`.github/workflows/build.yml`), but there's no required review process yet. In the meantime:
 
 ## Commit guidelines
 
