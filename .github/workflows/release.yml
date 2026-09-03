@@ -13,7 +13,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # fetch-depth: 0 is required for --notes-from-tag below: actions/checkout's default shallow,
+      # single-commit checkout doesn't bring over full annotated-tag data, so gh release create
+      # silently falls back to the tagged commit's message instead of the tag's own message.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up .NET 8 SDK
         uses: actions/setup-dotnet@v4
