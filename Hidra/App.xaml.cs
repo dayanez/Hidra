@@ -20,7 +20,6 @@ namespace Hidra
     public partial class App : Application, IDisposable
     {
         private Context context;
-        private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance mutex;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -34,8 +33,6 @@ namespace Hidra
             if (mutex.HasHandle && GetProcesses().Length <= 1)
             {
                 Logger.Info("Launching Hidra");
-                _hidGuardianClient = new HidGuardianClient();
-                _hidGuardianClient.WhitelistProcess();
 
                 InitializeApp();
                 CheckForBlockedDll();
@@ -140,11 +137,13 @@ namespace Hidra
                 ptrCopyData = Marshal.AllocCoTaskMem(Marshal.SizeOf(copyData));
                 Marshal.StructureToPtr(copyData, ptrCopyData, false);
 
-                // Send the message
-                foreach (var proc in processes)
+                // Look up the window by title rather than Process.MainWindowHandle: Hidra hides
+                // its window to the tray instead of exiting, and a hidden window's
+                // MainWindowHandle is always IntPtr.Zero, but FindWindow still finds it.
+                var windowHandle = NativeMethods.FindWindow(null, "Hidra");
+                if (windowHandle != IntPtr.Zero)
                 {
-                    if (proc.MainWindowHandle == IntPtr.Zero) continue;
-                    NativeMethods.SendMessage(proc.MainWindowHandle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ptrCopyData);
+                    NativeMethods.SendMessage(windowHandle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ptrCopyData);
                 }
                     
             }
@@ -164,7 +163,6 @@ namespace Hidra
         {
             mutex.Dispose();
             context?.Dispose();
-            _hidGuardianClient?.Dispose();
         }
 
         private void App_OnExit(object sender, ExitEventArgs e)

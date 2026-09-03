@@ -26,6 +26,9 @@ namespace Hidra.Views
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
         private Dictionary<Guid, ProfileWindow> ProfileWindows;
+        private readonly TrayIcon _trayIcon;
+        private bool _exitRequested;
+        private bool _hasShownTrayHint;
 
         enum CloseState
         {
@@ -41,6 +44,28 @@ namespace Hidra.Views
             Context = context;
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
             InitializeComponent();
+
+            _trayIcon = new TrayIcon();
+            _trayIcon.ShowRequested += TrayIcon_OnShowRequested;
+            _trayIcon.ExitRequested += TrayIcon_OnExitRequested;
+        }
+
+        private void TrayIcon_OnShowRequested()
+        {
+            RestoreWindow();
+        }
+
+        private void RestoreWindow()
+        {
+            Show();
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+
+        private void TrayIcon_OnExitRequested()
+        {
+            _exitRequested = true;
+            Close();
         }
 
         /// <summary>
@@ -225,6 +250,20 @@ namespace Hidra.Views
 
         private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
+            // Hidra runs in the background: closing the window hides it to the tray instead of
+            // exiting, unless the user explicitly chose Exit from the tray menu.
+            if (!_exitRequested)
+            {
+                e.Cancel = true;
+                Hide();
+                if (!_hasShownTrayHint)
+                {
+                    _hasShownTrayHint = true;
+                    _trayIcon.ShowFirstRunHint();
+                }
+                return;
+            }
+
             if (CloseState.ForceClose.Equals(WindowCloseState)) return;
             if (CloseState.Closing.Equals(WindowCloseState))
             {
@@ -287,6 +326,12 @@ namespace Hidra.Views
             e.CanExecute = Context.IsNotSaved;
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            _trayIcon.Dispose();
+            base.OnClosed(e);
+        }
+
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg != NativeMethods.WM_COPYDATA) return IntPtr.Zero;
@@ -294,6 +339,10 @@ namespace Hidra.Views
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
+
+            // A second launch attempt (e.g. double-clicking the exe again) should bring the
+            // window back if it's currently hidden to the tray, not silently do nothing.
+            RestoreWindow();
             return IntPtr.Zero;
         }
 
