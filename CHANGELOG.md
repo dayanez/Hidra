@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-03
+
+First tagged Hidra release. Everything below was built during the fork from Universal Control
+Remapper (UCR); see the "Everything below this point is inherited history from upstream UCR"
+divider further down for the version numbers that predate the fork itself.
+
 ### Added
 
 - `Button to Action` plugin: maps a keyboard or mouse button to running a program, opening a
@@ -47,6 +53,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   remapping only; it does not support game controllers as input or output. This is a deliberate
   narrowing of scope, not an unported gap, so it is not expected to come back. The code is still
   in git history for anyone forking Hidra back into a general HID remapper.
+
+### Fixed
+
+- Bind mode's `InputChanged` handler ran on the active input provider's own capture thread but
+  touched UI-owned state (`BindingTimer`, the bound `DeviceBinding`) without marshaling; it now
+  hops onto the UI thread first, with a guard against a keystroke landing right as the bind-mode
+  timeout expires. Not yet live-verified against a real bind-mode session (see `CONTRIBUTING.md`
+  for how to help test this).
+- A real Windows shutdown/logoff could kill Hidra before an unsaved change was written, since
+  closing the window normally just hides it to the tray. A `SystemEvents.SessionEnding` handler
+  now saves and force-exits immediately on an actual shutdown instead.
+- `TrayIcon` disposed the shared, framework-owned `SystemIcons.Application` fallback icon if
+  extracting the icon from Hidra's own exe ever returned null; it now only disposes an icon it
+  actually extracted.
+- `Core_RawInputHook.Dispose()` posted `WM_QUIT` to the hook thread but returned immediately,
+  before the thread had actually unhooked, and never reset `IsLive`. It now joins the hook thread
+  (with a timeout) before returning.
+- `ProfilesManager.CopyProfile` left the copy with duplicate `Profile`/`DeviceConfiguration` Guids
+  throughout the whole copied subtree (including nested child profiles), which meant a copied
+  child profile could report itself active whenever its original counterpart was (`Profile.IsActive()`
+  matches by Guid, not reference). It now remaps Guids through the whole copied subtree and
+  rewrites every device binding, input and output side, that references them.
+- `DeadZoneHelper` divided by zero at `Percentage == 100`, producing `NaN` that silently became
+  the opposite-extreme output for a max-magnitude input instead of the 0 that 100% dead zone
+  should mean.
+- `CircularDeadZoneHelper.Percentage` wasn't clamped to 0-100 like its two sibling helpers,
+  letting a negative percentage produce `NaN` output for an actually-centered stick.
 
 Everything below this point is inherited history from the upstream UCR project, prior to the
 Hidra fork.

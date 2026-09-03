@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    # Hidra is a WPF app; it only builds and runs on Windows.
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore Hidra.sln
+
+      # Hidra.Plugins isn't referenced by Hidra.csproj (it's MEF-loaded from a Plugins/ folder
+      # at runtime, see AGENTS.md), so publishing the app alone won't build it. Its own
+      # post-build target copies the plugin DLL into Hidra's plain build output
+      # (bin/Release/net8.0-windows/Plugins/<PluginName>/), which the publish step below then
+      # picks up separately from the single-file exe.
+      - name: Build plugins
+        run: dotnet build Hidra.Plugins/Hidra.Plugins.csproj --configuration Release --no-restore
+
+      - name: Publish app
+        run: >
+          dotnet publish Hidra/Hidra.csproj --configuration Release --no-restore
+          --runtime win-x64 --self-contained
+          -p:PublishSingleFile=true
+
+      - name: Assemble release folder
+        shell: pwsh
+        run: |
+          $publishDir = "Hidra/bin/Release/net8.0-windows/win-x64/publish"
+          Copy-Item -Recurse "Hidra/bin/Release/net8.0-windows/Plugins" "$publishDir/Plugins"
+          $version = "${{ github.ref_name }}"
+          Compress-Archive -Path "$publishDir/*" -DestinationPath "Hidra-$version-win-x64.zip"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "${{ github.ref_name }}" "Hidra-${{ github.ref_name }}-win-x64.zip"
+          --title "Hidra ${{ github.ref_name }}"
+          --notes-from-tag
