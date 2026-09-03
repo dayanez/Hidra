@@ -16,18 +16,24 @@ namespace Hidra.ViewModels.Controls
         public ObservableCollection<DeviceViewModel> AvailableDevices { get; set; }
         public ObservableCollection<DeviceViewModel> ShadowDevices { get; set; }
 
-        public DeviceAddRemoveControlViewModel()
-        {
-        }
+        public DeviceAddRemoveControlViewModel() { }
 
-        public DeviceAddRemoveControlViewModel(string titleLeft, string titleRight, List<DeviceViewModel> devices)
+        public DeviceAddRemoveControlViewModel(
+            string titleLeft,
+            string titleRight,
+            List<DeviceViewModel> devices
+        )
         {
             TitleLeft = titleLeft;
             TitleRight = titleRight;
             var deviceViewModels = new ObservableCollection<DeviceViewModel>(devices);
 
-            AvailableDevices = new ObservableCollection<DeviceViewModel>(deviceViewModels.Where(d => !d.Checked).ToList());
-            ShadowDevices = new ObservableCollection<DeviceViewModel>(deviceViewModels.Where(d => d.Checked).ToList());
+            AvailableDevices = new ObservableCollection<DeviceViewModel>(
+                deviceViewModels.Where(d => !d.Checked).ToList()
+            );
+            ShadowDevices = new ObservableCollection<DeviceViewModel>(
+                deviceViewModels.Where(d => d.Checked).ToList()
+            );
 
             AvailableDevices.CollectionChanged += Devices_CollectionChanged;
             ShadowDevices.CollectionChanged += Devices_CollectionChanged;
@@ -36,7 +42,10 @@ namespace Hidra.ViewModels.Controls
             SetFirstElement(ShadowDevices);
         }
 
-        private void Devices_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Devices_CollectionChanged(
+            object sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e
+        )
         {
             var collection = sender as ObservableCollection<DeviceViewModel>;
             SetFirstElement(collection);
@@ -62,13 +71,14 @@ namespace Hidra.ViewModels.Controls
 
         private void SetFirstElement(ObservableCollection<DeviceViewModel> deviceList)
         {
-            if (deviceList == null || deviceList.Count == 0) return;
+            if (deviceList == null || deviceList.Count == 0)
+                return;
 
             foreach (var deviceViewModel in deviceList)
             {
                 deviceViewModel.FirstElement = false;
             }
-            
+
             deviceList[0].FirstElement = true;
         }
     }
