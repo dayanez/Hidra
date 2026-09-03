@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    tags: ["v*"]
+    tags: ["hidra-v*"]
 
 jobs:
   release:
@@ -39,13 +39,17 @@ jobs:
         run: |
           $publishDir = "Hidra/bin/Release/net8.0-windows/win-x64/publish"
           Copy-Item -Recurse "Hidra/bin/Release/net8.0-windows/Plugins" "$publishDir/Plugins"
-          $version = "${{ github.ref_name }}"
+          # Tag is "hidra-v0.1.0" (disambiguated from UCR's own pre-fork v0.1.0-v0.9.0 tags);
+          # strip the "hidra-" prefix for a plain "Hidra-v0.1.0-win-x64.zip" asset name.
+          $version = "${{ github.ref_name }}" -replace '^hidra-', ''
           Compress-Archive -Path "$publishDir/*" -DestinationPath "Hidra-$version-win-x64.zip"
+          echo "ZIP_NAME=Hidra-$version-win-x64.zip" >> $env:GITHUB_ENV
+          echo "DISPLAY_VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: >
-          gh release create "${{ github.ref_name }}" "Hidra-${{ github.ref_name }}-win-x64.zip"
-          --title "Hidra ${{ github.ref_name }}"
+          gh release create "${{ github.ref_name }}" "${{ env.ZIP_NAME }}"
+          --title "Hidra ${{ env.DISPLAY_VERSION }}"
           --notes-from-tag
