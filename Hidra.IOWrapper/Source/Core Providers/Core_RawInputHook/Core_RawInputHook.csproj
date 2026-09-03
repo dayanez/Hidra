@@ -4,8 +4,10 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>Core_RawInputHook</RootNamespace>
     <AssemblyName>Core_RawInputHook</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>disable</Nullable>
+    <Product>Hidra.IOWrapper.Core_RawInputHook</Product>
+    <Company>Hidra</Company>
+    <Copyright>Copyright © Hidra Contributors 2026</Copyright>
     <!-- This is loaded as a MEF plugin, not project-referenced by the app, so its own NuGet
          dependencies must be copied locally too. -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

@@ -1,1 +1,0 @@
-﻿Provider for Xbox devices

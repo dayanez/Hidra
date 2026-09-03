@@ -1,1 +1,0 @@
-﻿Uses HidSharp to allow a provider to get the name of a device from VID/PID

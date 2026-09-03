@@ -1,1 +1,0 @@
-﻿Classes to poll a device, and poke a SubscriptionDictionary to fire it's subscriptions, or notify the provider to fire a BindMode event

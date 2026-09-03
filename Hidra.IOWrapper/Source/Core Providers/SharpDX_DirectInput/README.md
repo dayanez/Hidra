@@ -1,1 +1,0 @@
-﻿Adds support for DirectInput devices (Flightsticks, Steering wheels etc)

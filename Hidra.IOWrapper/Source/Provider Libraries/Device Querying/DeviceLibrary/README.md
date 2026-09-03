@@ -1,1 +1,0 @@
-﻿A central hub for a provider to work out which devices are connected, generate Report Descriptors (To populate input lists in front end), and translate between DeviceDescriptor and native handle etc

@@ -4,9 +4,9 @@ using System.ComponentModel.Composition;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Core_RawInputHook.Native;
-using Hidwizards.IOWrapper.Libraries.SubscriptionHandlers;
-using HidWizards.IOWrapper.DataTransferObjects;
-using HidWizards.IOWrapper.ProviderInterface.Interfaces;
+using Hidra.IOWrapper.Libraries.SubscriptionHandlers;
+using Hidra.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.ProviderInterface.Interfaces;
 
 namespace Core_RawInputHook
 {

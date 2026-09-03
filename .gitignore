@@ -207,6 +207,7 @@ obj
 
 # Hidra
 context.xml
+/Cache/
 
 # Rider
 *.iml
