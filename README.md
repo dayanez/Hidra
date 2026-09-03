@@ -10,14 +10,13 @@
 different key, a mouse action, or a triggered command, no drivers, no reboot, works with any
 keyboard or mouse regardless of manufacturer.
 
-```
-Caps Lock  ->  Escape
-Side mouse button  ->  Ctrl+Shift+Escape (open Task Manager)
-F13  ->  Launch a program, open a URL, or mute the volume
-```
-
 That's the whole idea: a background utility that intercepts input before it reaches Windows and
 sends out whatever you told it to instead.
+
+<p align="center">
+  <img src="docs/images/main-window.png" width="45%" alt="Hidra main window, showing a profile with input and output devices" />
+  <img src="docs/images/edit-profile.png" width="45%" alt="Editing a profile's remap plugins in Hidra" />
+</p>
 
 ## Why Hidra
 
