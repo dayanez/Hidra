@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -153,14 +152,6 @@ namespace Hidra.Core
         }
 
         #endregion
-
-        private string GetVersion()
-        {
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-
-            return fileVersionInfo.ProductVersion;
-        }
 
         public void Dispose()
         {

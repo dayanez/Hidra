@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -23,10 +22,11 @@ namespace Hidra.Views.Dialogs
 
         private string GetVersion()
         {
+            // Assembly.Location is always empty for a single-file-published app, which would
+            // make FileVersionInfo.GetVersionInfo(assembly.Location) throw; reading the
+            // AssemblyVersion attribute directly works the same in every publish mode.
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-
-            return fileVersionInfo.ProductVersion;
+            return assembly.GetName().Version?.ToString();
         }
     }
 }
