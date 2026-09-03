@@ -7,9 +7,8 @@
     <dashboard:CreateProfileDialogViewModel.InputControl>
         <controls:DeviceSelectControlViewModel>
             <controls:DeviceSelectControlViewModel.Devices>
-                <deviceViewModels:DeviceViewModel Title="Xbox controller 1" ProviderName="DX provider"/>
-                <deviceViewModels:DeviceViewModel Title="Xbox controller 2" ProviderName="DX provider"/>
-                <deviceViewModels:DeviceViewModel Title="Some custom controller (Extra buttons)" ProviderName="DX provider"/>
+                <deviceViewModels:DeviceViewModel Title="Keyboard (any)" ProviderName="Core_RawInputHook"/>
+                <deviceViewModels:DeviceViewModel Title="Mouse (any)" ProviderName="Core_RawInputHook"/>
             </controls:DeviceSelectControlViewModel.Devices>
         </controls:DeviceSelectControlViewModel>
     </dashboard:CreateProfileDialogViewModel.InputControl>

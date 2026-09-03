@@ -1,1 +1,0 @@
-﻿Adds support for the [ViGEm Virtual Bus](https://vigem.org/) to allow creation of virtual console controllers

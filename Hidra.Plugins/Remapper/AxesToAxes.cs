@@ -8,7 +8,7 @@ using Hidra.Core.Utilities.AxisHelpers;
 
 namespace Hidra.Plugins.Remapper
 {
-    [Plugin("Axes to Axes", Group = "Axis", Description = "Map from joystick to joystick")]
+    [Plugin("Axes to Axes", Group = "Axis", Description = "Map an X/Y axis pair to another, e.g. remapping mouse movement with its own sensitivity and dead zone")]
     [PluginInput(DeviceBindingCategory.Range, "X Axis")]
     [PluginInput(DeviceBindingCategory.Range, "Y Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "X Axis", Group = "X axis")]
