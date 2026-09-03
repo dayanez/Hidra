@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using HidWizards.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.DataTransferObjects;
 using Hidra.Core.Models.Binding;
 using NLog;
 

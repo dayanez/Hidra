@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml.Serialization;
-using HidWizards.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.DataTransferObjects;
 using Hidra.Core.Models;
 using Hidra.Core.Models.Binding;
 using Hidra.Core.Utilities;

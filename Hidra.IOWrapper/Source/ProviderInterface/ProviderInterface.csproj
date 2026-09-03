@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <RootNamespace>HidWizards.IOWrapper.ProviderInterface</RootNamespace>
-    <AssemblyName>IOWrapper.IProvider</AssemblyName>
+    <RootNamespace>Hidra.IOWrapper.ProviderInterface</RootNamespace>
+    <AssemblyName>Hidra.IOWrapper.IProvider</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>disable</Nullable>
   </PropertyGroup>

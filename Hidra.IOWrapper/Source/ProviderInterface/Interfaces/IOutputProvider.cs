@@ -1,6 +1,6 @@
-﻿using HidWizards.IOWrapper.DataTransferObjects;
+﻿using Hidra.IOWrapper.DataTransferObjects;
 
-namespace HidWizards.IOWrapper.ProviderInterface.Interfaces
+namespace Hidra.IOWrapper.ProviderInterface.Interfaces
 {
     /// <inheritdoc />
     /// <summary>

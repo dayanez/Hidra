@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
-using HidWizards.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.DataTransferObjects;
 using Hidra.Core.Annotations;
 
 namespace Hidra.Core.Models.Binding

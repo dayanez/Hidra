@@ -3,11 +3,11 @@ using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
-using HidWizards.IOWrapper.DataTransferObjects;
-using HidWizards.IOWrapper.ProviderInterface;
-using HidWizards.IOWrapper.ProviderInterface.Interfaces;
+using Hidra.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.ProviderInterface;
+using Hidra.IOWrapper.ProviderInterface.Interfaces;
 
-namespace HidWizards.IOWrapper.Core
+namespace Hidra.IOWrapper.Core
 {
     public enum InputTypes { Button, Axis }
 

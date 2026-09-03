@@ -20,7 +20,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 
-namespace HidWizards.IOWrapper.Core
+namespace Hidra.IOWrapper.Core
 {
     public class GenericMEFPluginLoader<T>
     {

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <RootNamespace>HidWizards.IOWrapper.Core</RootNamespace>
-    <AssemblyName>IOWrapper.Core</AssemblyName>
+    <RootNamespace>Hidra.IOWrapper.Core</RootNamespace>
+    <AssemblyName>Hidra.IOWrapper.Core</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>disable</Nullable>
   </PropertyGroup>

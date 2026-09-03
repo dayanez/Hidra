@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <RootNamespace>Hidwizards.IOWrapper.Libraries.SubscriptionHandlers</RootNamespace>
-    <AssemblyName>IOWrapper.Libraries.SubscriptionHandlers</AssemblyName>
+    <RootNamespace>Hidra.IOWrapper.Libraries.SubscriptionHandlers</RootNamespace>
+    <AssemblyName>Hidra.IOWrapper.Libraries.SubscriptionHandlers</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>disable</Nullable>
   </PropertyGroup>

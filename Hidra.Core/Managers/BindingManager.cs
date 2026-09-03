@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
-using HidWizards.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.DataTransferObjects;
 using Hidra.Core.Annotations;
 using Hidra.Core.Models;
 using Hidra.Core.Models.Binding;

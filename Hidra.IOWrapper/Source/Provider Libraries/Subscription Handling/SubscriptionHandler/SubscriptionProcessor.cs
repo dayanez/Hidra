@@ -1,8 +1,8 @@
 ﻿using System;
-using Hidwizards.IOWrapper.Libraries.EmptyEventDictionary;
-using HidWizards.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.Libraries.EmptyEventDictionary;
+using Hidra.IOWrapper.DataTransferObjects;
 
-namespace Hidwizards.IOWrapper.Libraries.SubscriptionHandlers
+namespace Hidra.IOWrapper.Libraries.SubscriptionHandlers
 {
     public class SubscriptionProcessor : EmptyEventDictionary<Guid, InputSubscriptionRequest, BindingDescriptor>
     {

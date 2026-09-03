@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using HidWizards.IOWrapper.DataTransferObjects;
+using Hidra.IOWrapper.DataTransferObjects;
 
-namespace Hidwizards.IOWrapper.Libraries.SubscriptionHandlers
+namespace Hidra.IOWrapper.Libraries.SubscriptionHandlers
 {
     public interface ISubscriptionStore
     {

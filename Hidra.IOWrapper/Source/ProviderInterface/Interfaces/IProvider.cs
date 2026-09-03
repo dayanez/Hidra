@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HidWizards.IOWrapper.ProviderInterface.Interfaces
+namespace Hidra.IOWrapper.ProviderInterface.Interfaces
 {
     /// <inheritdoc />
     /// <summary>

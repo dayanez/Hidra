@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HidWizards.IOWrapper.DataTransferObjects
+namespace Hidra.IOWrapper.DataTransferObjects
 {
     /// <summary>
     /// The primary purpose of a <see cref="BindingUpdate"/> is to provide a format which will allow us to detect, as soon as possible...

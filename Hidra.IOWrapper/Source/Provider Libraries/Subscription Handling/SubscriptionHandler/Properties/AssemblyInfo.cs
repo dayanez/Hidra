@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SubscriptionHandler")]
+[assembly: AssemblyTitle("Hidra.IOWrapper.Libraries.SubscriptionHandlers")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SubscriptionHandler")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("Hidra")]
+[assembly: AssemblyProduct("Hidra.IOWrapper.Libraries.SubscriptionHandlers")]
+[assembly: AssemblyCopyright("Copyright © Hidra Contributors 2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

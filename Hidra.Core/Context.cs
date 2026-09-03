@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using HidWizards.IOWrapper.Core;
+using Hidra.IOWrapper.Core;
 using Hidra.Core.Annotations;
 using Hidra.Core.Managers;
 using Hidra.Core.Models;
