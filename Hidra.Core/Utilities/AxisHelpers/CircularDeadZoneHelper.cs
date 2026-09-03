@@ -9,16 +9,26 @@ namespace Hidra.Core.Utilities.AxisHelpers
 {
     public class CircularDeadZoneHelper
     {
-        private double _scaleFactor;
         private double _deadzoneRadius;
 
         public int Percentage
         {
             get => _percentage;
             set
-            //TODO CHECK FOR NEG
             {
-                _percentage = value;
+                if (value < 0)
+                {
+                    _percentage = 0;
+                }
+                else if (value > 100)
+                {
+                    _percentage = 100;
+                }
+                else
+                {
+                    _percentage = value;
+                }
+
                 PrecalculateValues();
             }
         }
@@ -34,13 +44,11 @@ namespace Hidra.Core.Utilities.AxisHelpers
             if (_percentage == 0)
             {
                 _deadzoneRadius = 0;
-                _scaleFactor = 1;
             }
             else
             {
                 const double max = Constants.AxisMaxValue;
                 _deadzoneRadius = (_percentage / 100d) * max;
-                _scaleFactor = max / (max - _deadzoneRadius);
             }
         }
 

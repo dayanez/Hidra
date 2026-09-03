@@ -1,11 +1,9 @@
 using System;
-using System.Diagnostics;
 
 namespace Hidra.Core.Utilities.AxisHelpers
 {
     public class DeadZoneHelper
     {
-        //private double gapPercent;
         private double _scaleFactor;
         private double _deadzoneCutoff;
         
@@ -44,6 +42,15 @@ namespace Hidra.Core.Utilities.AxisHelpers
                 _deadzoneCutoff = 0;
                 _scaleFactor = 1.0;
             }
+            else if (_percentage == 100)
+            {
+                // At the maximum cutoff, everything is inside the dead zone; computing this the
+                // same way as the general case below would divide by zero (AxisMaxValue -
+                // AxisMaxValue) and turn scaleFactor into Infinity, which then produces NaN/wrong
+                // output for max-magnitude input instead of the 0 that 100% dead zone should mean.
+                _deadzoneCutoff = Constants.AxisMaxValue;
+                _scaleFactor = 0;
+            }
             else
             {
                 _deadzoneCutoff = Constants.AxisMaxValue * (_percentage * 0.01);
@@ -62,8 +69,7 @@ namespace Hidra.Core.Utilities.AxisHelpers
             var sign = Math.Sign(value);
             var adjustedValue = (wideVal - _deadzoneCutoff) * _scaleFactor;
             var newValue = (int) Math.Round(adjustedValue * sign);
-            if (newValue < -32768) newValue = -32768;   // ToDo: Negative values can go up to -32777 (9 over), can this be improved?
-            //Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
+            if (newValue < -32768) newValue = -32768;
             return (short) newValue;
         }
     }
