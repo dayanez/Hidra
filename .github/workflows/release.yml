@@ -28,13 +28,18 @@ jobs:
       - name: Restore
         run: dotnet restore Hidra.sln
 
-      # Hidra.Plugins isn't referenced by Hidra.csproj (it's MEF-loaded from a Plugins/ folder
-      # at runtime, see AGENTS.md), so publishing the app alone won't build it. Its own
-      # post-build target copies the plugin DLL into Hidra's plain build output
-      # (bin/Release/net8.0-windows/Plugins/<PluginName>/), which the publish step below then
-      # picks up separately from the single-file exe.
-      - name: Build plugins
-        run: dotnet build Hidra.Plugins/Hidra.Plugins.csproj --configuration Release --no-restore
+      # Neither Hidra.Plugins nor Core_RawInputHook is referenced by Hidra.csproj - both are
+      # MEF-loaded at runtime from folders next to the exe (Plugins/ and Providers/
+      # respectively, see AGENTS.md and IOController.cs), so publishing the app alone builds
+      # neither. Each has its own post-build target that copies its output into Hidra's plain
+      # build output (bin/Release/net8.0-windows/{Plugins,Providers}/<Name>/), which the
+      # publish step below then picks up separately from the single-file exe. Without
+      # Core_RawInputHook specifically, Hidra has no input/output provider at all - no
+      # keyboard/mouse devices show up anywhere in the UI.
+      - name: Build plugins and providers
+        run: >
+          dotnet build Hidra.Plugins/Hidra.Plugins.csproj --configuration Release --no-restore &&
+          dotnet build "Hidra.IOWrapper/Source/Core Providers/Core_RawInputHook/Core_RawInputHook.csproj" --configuration Release --no-restore
 
       # Deliberately no --no-restore here: the plain `dotnet restore Hidra.sln` above doesn't
       # pull in win-x64-specific assets, so this step needs its own implicit restore (triggered
@@ -50,6 +55,7 @@ jobs:
         run: |
           $publishDir = "Hidra/bin/Release/net8.0-windows/win-x64/publish"
           Copy-Item -Recurse "Hidra/bin/Release/net8.0-windows/Plugins" "$publishDir/Plugins"
+          Copy-Item -Recurse "Hidra/bin/Release/net8.0-windows/Providers" "$publishDir/Providers"
           # Tag is "hidra-v0.1.0" (disambiguated from UCR's own pre-fork v0.1.0-v0.9.0 tags);
           # strip the "hidra-" prefix for a plain "Hidra-v0.1.0-win-x64.zip" asset name.
           $version = "${{ github.ref_name }}" -replace '^hidra-', ''
