@@ -28,9 +28,12 @@ jobs:
       - name: Build plugins
         run: dotnet build Hidra.Plugins/Hidra.Plugins.csproj --configuration Release --no-restore
 
+      # Deliberately no --no-restore here: the plain `dotnet restore Hidra.sln` above doesn't
+      # pull in win-x64-specific assets, so this step needs its own implicit restore (triggered
+      # by --runtime) to have anything to publish against.
       - name: Publish app
         run: >
-          dotnet publish Hidra/Hidra.csproj --configuration Release --no-restore
+          dotnet publish Hidra/Hidra.csproj --configuration Release
           --runtime win-x64 --self-contained
           -p:PublishSingleFile=true
 
