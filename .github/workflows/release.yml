@@ -13,9 +13,6 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # fetch-depth: 0 is required for --notes-from-tag below: actions/checkout's default shallow,
-      # single-commit checkout doesn't bring over full annotated-tag data, so gh release create
-      # silently falls back to the tagged commit's message instead of the tag's own message.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -62,6 +59,10 @@ jobs:
           Compress-Archive -Path "$publishDir/*" -DestinationPath "Hidra-$version-win-x64.zip"
           echo "ZIP_NAME=Hidra-$version-win-x64.zip" >> $env:GITHUB_ENV
           echo "DISPLAY_VERSION=$version" >> $env:GITHUB_ENV
+          # `gh release create --notes-from-tag` proved unreliable in practice (it silently used
+          # the tagged commit's message instead of the annotated tag's own message, even with
+          # full tag data present in the checkout) - extract the tag message ourselves instead.
+          git tag -l --format="%(contents)" "${{ github.ref_name }}" | Out-File -Encoding utf8 release-notes.md
 
       - name: Publish GitHub Release
         env:
@@ -69,4 +70,4 @@ jobs:
         run: >
           gh release create "${{ github.ref_name }}" "${{ env.ZIP_NAME }}"
           --title "Hidra ${{ env.DISPLAY_VERSION }}"
-          --notes-from-tag
+          --notes-file release-notes.md
