@@ -7,7 +7,7 @@ using Hidra.Core.Utilities.AxisHelpers;
 
 namespace Hidra.Plugins.Remapper
 {
-    [Plugin("Axis to Axis (Modifier)", Group = "Axis", Description = "Map from one axis to another, with a held button from any device (e.g. a keyboard key) switching to an alternate sensitivity - a cross-device 'sniper mode' / DPI preset")]
+    [Plugin("Axis to Axis (Modifier)", Group = "Axis", Description = "Map from one axis to another, with a held button from any device (e.g. a keyboard key) switching to an alternate sensitivity, for a cross-device 'sniper mode' or DPI preset")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginInput(DeviceBindingCategory.Momentary, "Modifier")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]

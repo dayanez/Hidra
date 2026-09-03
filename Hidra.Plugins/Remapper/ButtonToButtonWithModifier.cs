@@ -4,7 +4,7 @@ using Hidra.Core.Models.Binding;
 
 namespace Hidra.Plugins.Remapper
 {
-    [Plugin("Button to Button (Chord)", Group = "Button", Description = "Map one button to another, but only while a modifier button from any device is held (or not held) - a cross-device chord, e.g. a keyboard key changing what a mouse button does")]
+    [Plugin("Button to Button (Chord)", Group = "Button", Description = "Map one button to another, but only while a modifier button from any device is held (or not held): a cross-device chord, e.g. a keyboard key changing what a mouse button does")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]
     [PluginInput(DeviceBindingCategory.Momentary, "Modifier")]
     [PluginOutput(DeviceBindingCategory.Momentary, "Button")]

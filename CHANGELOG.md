@@ -5,11 +5,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `Button to Action` plugin: maps a keyboard or mouse button to running a program, opening a
+  URL, sending a synthetic key chord, or running a system command (lock, volume, media keys).
+  Ported from a standalone prototype (`InputAutomationEngine`) into Hidra's own plugin system,
+  so it shares Hidra's existing input capture and profile switching instead of running its own
+  separate keyboard hook and process monitor. The action runs on a thread pool thread, not the
+  input provider's capture thread, so a slow action (e.g. a process launch) can't add latency to
+  every other keystroke.
+- System tray icon. Closing the main window now hides it to the tray instead of exiting Hidra,
+  since the point of a remapper is to keep running in the background; a genuine exit is available
+  from the tray's right-click menu, which also has a "Start with Windows" toggle. Relaunching the
+  exe while the window is hidden brings it back rather than doing nothing (this needed a fix in
+  the existing single-instance IPC too, since it looked up the running window via
+  `Process.MainWindowHandle`, which is always zero for a hidden window; it now uses `FindWindow`
+  by title instead, which finds the window whether it's visible or not).
+
 ### Changed
 
 - Forked from Universal Control Remapper (UCR) and rebranded as Hidra
 - Ported the core app, plugin system, and the Interception/ViGEm providers to .NET 8
 - Vendored the IOWrapper driver layer directly into this repo as `Hidra.IOWrapper`
+- Added `Core_RawInputHook`, a driver-free keyboard/mouse input provider (user-space hook plus
+  Raw Input for mouse movement), as a replacement for the kernel-driver-based Interception
+  provider
+
+### Removed
+
+- The Interception input provider and its vendored wrapper DLL, now that `Core_RawInputHook`
+  covers keyboard and mouse capture without a kernel driver
+- The niche device providers inherited from UCR that were never ported to .NET 8 and were not
+  part of the buildable solution (MIDI, Tobii eye tracker, TitanOne, DS4Windows, SpaceMouse,
+  vJoy, SharpDX-based DirectInput/XInput), along with the shared libraries and the standalone
+  `IOWrapper.sln`/`TestApp` that only those providers used. They remain available in git history
+  if a future port needs them.
+- The standalone `InputAutomationEngine` prototype console app, now that its functionality lives
+  in Hidra as the `Button to Action` plugin
+- The `Core_ViGEm` provider (virtual Xbox 360/DualShock 4 controller output) and its
+  now-unreferenced `ProviderLogger` dependency. Hidra is now scoped to keyboard and mouse
+  remapping only; it does not support game controllers as input or output. This is a deliberate
+  narrowing of scope, not an unported gap, so it is not expected to come back. The code is still
+  in git history for anyone forking Hidra back into a general HID remapper.
 
 Everything below this point is inherited history from the upstream UCR project, prior to the
 Hidra fork.
