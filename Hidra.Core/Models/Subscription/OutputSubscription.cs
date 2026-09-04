@@ -22,7 +22,7 @@ namespace Hidra.Core.Models.Subscription
 
         private void WriteOutput(short value)
         {
-            DeviceBinding.Profile.Context.IOController.SetOutputstate(SubscriptionsManager.GetOutputSubscriptionRequest(SubscriptionStateGuid, DeviceSubscription), SubscriptionsManager.GetBindingDescriptor(DeviceBinding), (int)value);
+            DeviceBinding.Profile!.Context.IOController.SetOutputstate(SubscriptionsManager.GetOutputSubscriptionRequest(SubscriptionStateGuid, DeviceSubscription), SubscriptionsManager.GetBindingDescriptor(DeviceBinding), (int)value);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Hidra.Core.Models
     public class Filter
     {
 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public bool Negative { get; set; }
 
         public static string GetShadowName(string name, int shadowCloneNumber)

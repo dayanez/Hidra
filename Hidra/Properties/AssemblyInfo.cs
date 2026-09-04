@@ -2,9 +2,17 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Windows;
 
-// General Information about an assembly is controlled through the following 
+// The SDK normally injects this automatically for a net8.0-windows app, but that generation is
+// off here (see GenerateAssemblyInfo in Hidra.csproj) because this project keeps a hand-written
+// AssemblyInfo.cs. Without it, every Windows-only API this app calls (tray icon, registry,
+// mutex ACLs, WPF theming) trips CA1416 as if Hidra might run on a non-Windows platform, which it
+// never can (UseWPF/UseWindowsForms both require Windows).
+[assembly: SupportedOSPlatform("windows7.0")]
+
+// General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Hidra")]
@@ -50,5 +58,5 @@ using System.Windows;
 //
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("0.1.0.0")]
-[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblyVersion("0.1.1.0")]
+[assembly: AssemblyFileVersion("0.1.1.0")]

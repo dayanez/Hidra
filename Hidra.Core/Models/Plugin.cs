@@ -16,16 +16,23 @@ namespace Hidra.Core.Models
     public abstract class Plugin : IComparable<Plugin>
     {
         /* Persistence */
-        public List<DeviceBinding> Outputs { get; }
-        public List<Filter> Filters { get; set; }
-        
+        public List<DeviceBinding> Outputs { get; } = new List<DeviceBinding>();
+        public List<Filter> Filters { get; set; } = new List<Filter>();
+
         /* Runtime */
-        internal Profile Profile { get; set; }
-        private List<IODefinition> _inputCategories;
-        private List<IODefinition> _outputCategories;
-        private List<PluginPropertyGroup> _pluginPropertyGroups;
-        internal FilterState FilterState { get; set; }
-        internal Mapping RuntimeMapping { get; set; }
+        // Null for a template instance (e.g. the plugin toolbox) that was never attached to a
+        // mapping; ContextChanged() below already treats this defensively.
+        internal Profile? Profile { get; set; }
+        private List<IODefinition>? _inputCategories;
+        private List<IODefinition>? _outputCategories;
+        private List<PluginPropertyGroup>? _pluginPropertyGroups;
+        // Never actually assigned anywhere in the codebase (Update() logic uses
+        // RuntimeMapping.FilterState instead); kept nullable rather than removed here since
+        // that's a separate cleanup, not part of this nullable-annotation pass.
+        internal FilterState? FilterState { get; set; }
+        // Set by Mapping.PrepareMapping before a live Update() cycle begins; every RuntimeMapping
+        // read below happens during that cycle.
+        internal Mapping RuntimeMapping { get; set; } = null!;
 
         #region Properties
 
@@ -63,11 +70,11 @@ namespace Hidra.Core.Models
         }
 
         [XmlIgnore]
-        public string PluginName =>  GetPluginAttribute().Name;
+        public string PluginName => GetPluginAttribute().Name;
         [XmlIgnore]
-        public string Description => GetPluginAttribute().Description;
+        public string Description => GetPluginAttribute().Description ?? string.Empty;
         [XmlIgnore]
-        public string Group => GetPluginAttribute().Group;
+        public string Group => GetPluginAttribute().Group ?? string.Empty;
         [XmlIgnore]
         public bool IsDisabled => GetPluginAttribute().Disabled;
 
@@ -77,7 +84,7 @@ namespace Hidra.Core.Models
         {
             public string Name;
             public DeviceBindingCategory Category;
-            public string GroupName;
+            public string? GroupName;
         }
 
         public enum FilterMode
@@ -90,17 +97,14 @@ namespace Hidra.Core.Models
 
         protected Plugin()
         {
-            Outputs = new List<DeviceBinding>();
             foreach (var _ in OutputCategories)
             {
                 Outputs.Add(new DeviceBinding(null, Profile, DeviceIoType.Output));
             }
-
-            Filters = new List<Filter>();
         }
 
         #region Life cycle
-        
+
         public virtual void OnActivate()
         {
 
@@ -156,8 +160,8 @@ namespace Hidra.Core.Models
         private string GetFilterName(string filterName)
         {
             var filter = filterName.ToLower();
-            return RuntimeMapping.IsShadowMapping 
-                ? Filter.GetShadowName(filter, RuntimeMapping.ShadowDeviceNumber) 
+            return RuntimeMapping.IsShadowMapping
+                ? Filter.GetShadowName(filter, RuntimeMapping.ShadowDeviceNumber)
                 : filter;
         }
 
@@ -175,13 +179,13 @@ namespace Hidra.Core.Models
                 ContextChanged();
                 return existingFilter;
             }
-            
+
             var filter = new Filter()
             {
                 Name = name,
                 Negative = negative
             };
-            
+
             Filters.Add(filter);
             ContextChanged();
             return filter;
@@ -202,7 +206,7 @@ namespace Hidra.Core.Models
 
         #endregion
 
-        public void SetProfile(Profile profile)
+        public void SetProfile(Profile? profile)
         {
             Profile = profile;
             Outputs.ForEach(o => o.Profile = profile);
@@ -211,7 +215,9 @@ namespace Hidra.Core.Models
         public Plugin Duplicate()
         {
             var newPlugin = Context.DeepXmlClone(this);
-            newPlugin.PostLoad(Profile.Context, Profile);
+            // Duplicate() is only ever called on a plugin that's already part of a mapping, so
+            // Profile is already set at this point.
+            newPlugin.PostLoad(Profile!.Context, Profile);
             return newPlugin;
         }
 
@@ -222,7 +228,7 @@ namespace Hidra.Core.Models
 
         #region Loading
 
-        public void PostLoad(Context context, Profile parentProfile)
+        public void PostLoad(Context context, Profile? parentProfile)
         {
             SetProfile(parentProfile);
             ZipDeviceBindingList(Outputs);
@@ -250,12 +256,12 @@ namespace Hidra.Core.Models
         }
 
         #endregion
-        
+
         #region Comparison
 
-        public int CompareTo(Plugin other)
+        public int CompareTo(Plugin? other)
         {
-            return string.Compare(PluginName, other.PluginName, StringComparison.Ordinal);
+            return string.Compare(PluginName, other?.PluginName, StringComparison.Ordinal);
         }
 
         public bool HasSameInputCategories(Plugin other)
@@ -275,15 +281,15 @@ namespace Hidra.Core.Models
 
         private PluginAttribute GetPluginAttribute()
         {
-            var pluginAttribute = (PluginAttribute)Attribute.GetCustomAttribute(GetType(), typeof(PluginAttribute));
+            var pluginAttribute = (PluginAttribute?)Attribute.GetCustomAttribute(GetType(), typeof(PluginAttribute));
 
             return pluginAttribute ?? new PluginAttribute("Invalid plugin");
         }
-        
+
         private List<IODefinition> GetIODefinitions(DeviceIoType deviceIoType)
         {
             var attributes = (PluginIoAttribute[])Attribute.GetCustomAttributes(GetType(), typeof(PluginIoAttribute));
-            
+
             return attributes.Where(a => a.DeviceIoType == deviceIoType).Select(a => new IODefinition()
             {
                 Category = a.DeviceBindingCategory,
@@ -295,9 +301,10 @@ namespace Hidra.Core.Models
         private List<PluginProperty> GetGuiProperties()
         {
             var properties = from p in GetType().GetProperties()
-                let attr = p.GetCustomAttributes(typeof(PluginGuiAttribute), true)
-                where attr.Length == 1
-                select new { Property = p, Attribute = attr.First() as PluginGuiAttribute };
+                             let attr = p.GetCustomAttributes(typeof(PluginGuiAttribute), true)
+                             where attr.Length == 1
+                             // Safe: GetCustomAttributes was already filtered to PluginGuiAttribute above.
+                             select new { Property = p, Attribute = (PluginGuiAttribute)attr.First() };
 
 
             return properties.Select(prop => new PluginProperty(this, prop.Property, prop.Attribute.Name, prop.Attribute.Order, prop.Attribute.Group)).ToList();
@@ -306,24 +313,28 @@ namespace Hidra.Core.Models
         private List<PluginGroupAttribute> GetPluginGroups()
         {
             return GetType().GetCustomAttributes(typeof(PluginGroupAttribute), true).ToList()
-                .Select(a => ((PluginGroupAttribute) a)).ToList();
+                .Select(a => ((PluginGroupAttribute)a)).ToList();
         }
 
         private List<string> GetPluginOutputGroups()
         {
             return GetType().GetCustomAttributes(typeof(PluginOutput), true).ToList()
-                .Select(a => ((PluginOutput)a).Group).Distinct().ToList();
+                .Select(a => ((PluginOutput)a).Group)
+                .Where(group => group != null)
+                .Select(group => group!)
+                .Distinct().ToList();
         }
 
         public List<PluginPropertyGroup> GetGuiMatrix()
         {
             var result = new List<PluginPropertyGroup>();
-            
+
             var guiProperties = GetGuiProperties();
             guiProperties.Sort();
 
             var ungroupedProperties = guiProperties.FindAll(p => p.Group == null);
-            if (ungroupedProperties.Count > 0) { 
+            if (ungroupedProperties.Count > 0)
+            {
                 result.Add(new PluginPropertyGroup()
                 {
                     Title = "Settings",
@@ -342,8 +353,8 @@ namespace Hidra.Core.Models
                 {
                     Title = group.Name,
                     GroupName = group.Group,
-                    GroupType = GetPluginOutputGroups().Contains(group.Group) 
-                        ? PluginPropertyGroup.GroupTypes.Output 
+                    GroupType = GetPluginOutputGroups().Contains(group.Group)
+                        ? PluginPropertyGroup.GroupTypes.Output
                         : PluginPropertyGroup.GroupTypes.Settings,
                     PluginProperties = properties
                 });

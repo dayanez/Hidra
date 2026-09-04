@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -19,23 +20,26 @@ namespace Hidra.Core
         private const string PluginPath = "Plugins";
 
         /* Persistence */
-        public List<Profile> Profiles { get; set; }
+        public List<Profile> Profiles { get; set; } = new List<Profile>();
 
         /* Runtime */
-        [XmlIgnore] public Profile ActiveProfile { get; set; }
-        [XmlIgnore] public ProfilesManager ProfilesManager { get; set; }
-        [XmlIgnore] public DevicesManager DevicesManager { get; set; }
-        [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; }
-        [XmlIgnore] public PluginsManager PluginManager { get; set; }
-        [XmlIgnore] public BindingManager BindingManager { get; set; }
-        [XmlIgnore] public ProcessProfileSwitcher ProcessProfileSwitcher { get; set; }
+        [XmlIgnore] public Profile? ActiveProfile { get; set; }
+        [XmlIgnore] public ProfilesManager ProfilesManager { get; set; } = null!;
+        [XmlIgnore] public DevicesManager DevicesManager { get; set; } = null!;
+        [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; } = null!;
+        [XmlIgnore] public PluginsManager PluginManager { get; set; } = null!;
+        [XmlIgnore] public BindingManager BindingManager { get; set; } = null!;
+        [XmlIgnore] public ProcessProfileSwitcher ProcessProfileSwitcher { get; set; } = null!;
 
-        public delegate void ActiveProfileChanged(Profile profile);
-        public event ActiveProfileChanged ActiveProfileChangedEvent;
-        
+        public delegate void ActiveProfileChanged(Profile? profile);
+        public event ActiveProfileChanged? ActiveProfileChangedEvent;
+
         internal bool IsNotSaved { get; private set; }
-        internal IOController IOController { get; set; }
-        private OptionSet options;
+        // Left unset (rather than nullable) if the try/catch below hits DirectoryNotFoundException;
+        // that's a pre-existing startup-failure condition this nullable pass doesn't change the
+        // behavior of, since every consumer already calls into it unconditionally.
+        internal IOController IOController { get; set; } = null!;
+        private OptionSet options = null!;
 
         public Context()
         {
@@ -43,6 +47,8 @@ namespace Hidra.Core
             SetCommandLineOptions();
         }
 
+        [MemberNotNull(nameof(Profiles), nameof(ProfilesManager), nameof(DevicesManager),
+            nameof(SubscriptionsManager), nameof(PluginManager), nameof(BindingManager), nameof(ProcessProfileSwitcher))]
         private void Init()
         {
             IsNotSaved = false;
@@ -56,7 +62,7 @@ namespace Hidra.Core
             {
                 Logger.Error("IOWrapper provider directory not found", e);
             }
-            
+
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
             SubscriptionsManager = new SubscriptionsManager(this);
@@ -65,6 +71,7 @@ namespace Hidra.Core
             ProcessProfileSwitcher = new ProcessProfileSwitcher(this);
         }
 
+        [MemberNotNull(nameof(options))]
         private void SetCommandLineOptions()
         {
             options = new OptionSet {
@@ -97,8 +104,8 @@ namespace Hidra.Core
         }
 
         #region Persistence
-        
-        public bool SaveContext(List<Type> pluginTypes = null)
+
+        public bool SaveContext(List<Type>? pluginTypes = null)
         {
             var serializer = GetXmlSerializer(pluginTypes);
             using (var streamWriter = new StreamWriter(ContextName))
@@ -110,7 +117,7 @@ namespace Hidra.Core
             return true;
         }
 
-        public static Context Load(List<Type> pluginTypes = null)
+        public static Context Load(List<Type>? pluginTypes = null)
         {
             Context context;
             var serializer = GetXmlSerializer(pluginTypes);
@@ -118,7 +125,9 @@ namespace Hidra.Core
             {
                 using (var fileStream = new FileStream(ContextName, FileMode.Open))
                 {
-                    context = (Context) serializer.Deserialize(fileStream);
+                    // A successful Deserialize() of a context.xml written by SaveContext always
+                    // yields a Context; XmlSerializer's return type is just object-shaped.
+                    context = (Context)serializer.Deserialize(fileStream)!;
                     context.PostLoad();
                 }
             }
@@ -138,12 +147,12 @@ namespace Hidra.Core
             }
         }
 
-        private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes)
+        private static XmlSerializer GetXmlSerializer(List<Type>? additionalPluginTypes)
         {
             return GetXmlSerializer(additionalPluginTypes, typeof(Context));
         }
 
-        private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes, Type type)
+        private static XmlSerializer GetXmlSerializer(List<Type>? additionalPluginTypes, Type type)
         {
             var plugins = new PluginsManager(PluginPath);
             var pluginTypes = plugins.Plugins.Select(p => p.GetType()).ToList();
@@ -168,11 +177,13 @@ namespace Hidra.Core
                 formatter.Serialize(ms, obj);
                 ms.Position = 0;
 
-                return (T)formatter.Deserialize(ms);
+                // Same reasoning as Load() above: a round-trip of a just-serialized T always
+                // deserializes back to a T.
+                return (T)formatter.Deserialize(ms)!;
             }
         }
 
-        public void OnActiveProfileChangedEvent(Profile profile)
+        public void OnActiveProfileChangedEvent(Profile? profile)
         {
             ActiveProfileChangedEvent?.Invoke(profile);
         }

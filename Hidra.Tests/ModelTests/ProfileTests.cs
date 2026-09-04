@@ -43,7 +43,7 @@ namespace Hidra.Tests.ModelTests
             Assert.That(_profile.IsActive, Is.Not.True);
             Assert.That(_context.IsNotSaved, Is.True);
         }
-        
+
         [Test]
         public void RemoveChildProfile()
         {

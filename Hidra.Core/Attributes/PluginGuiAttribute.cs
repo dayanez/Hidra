@@ -7,7 +7,7 @@ namespace Hidra.Core.Attributes
     {
         private readonly string _name;
         private int _order;
-        private string _group;
+        private string? _group;
 
         public PluginGuiAttribute(string name)
         {
@@ -24,7 +24,7 @@ namespace Hidra.Core.Attributes
             set => _order = value;
         }
 
-        public virtual string Group
+        public virtual string? Group
         {
             get => _group;
             set => _group = value;

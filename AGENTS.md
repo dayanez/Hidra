@@ -25,10 +25,19 @@ Format code:
 dotnet format Hidra.sln
 ```
 
-There is no `zig fmt`/`prettier`-equivalent single formatter config
-(`.editorconfig`) checked in yet, so `dotnet format` uses its own defaults.
-Match the surrounding file's existing style over the formatter's output when
-the two disagree.
+`.editorconfig` at the repo root defines indentation, brace style, and naming
+conventions for `dotnet format` and IDEs to follow. It's not yet a CI gate
+(`dotnet format --verify-no-changes` isn't run in `build.yml`), and a chunk of
+pre-existing code (notably vendored `Hidra.IOWrapper` files) doesn't fully
+conform yet; that's a separate cleanup, not something to fix as a side effect
+of unrelated changes. Match the surrounding file's existing style over the
+formatter's output when the two disagree.
+
+`Directory.Build.props` at the repo root enables the built-in .NET code
+analyzers (`EnableNETAnalyzers`, `AnalysisLevel=latest-recommended`) for every
+project. These are warnings, not errors, so they don't fail the build; there
+is a real pre-existing backlog of them, expected to shrink over time rather
+than be fixed in one pass.
 
 ### Tests
 

@@ -11,7 +11,7 @@ namespace Hidra.Core.Models.Subscription
         public Dictionary<string, bool> FilterRuntimeDictionary { get; set; }
 
         public delegate void FilterStateChanged(string filterName, bool value);
-        public event FilterStateChanged FilterStateChangedEvent;
+        public event FilterStateChanged? FilterStateChangedEvent;
 
         public FilterState()
         {

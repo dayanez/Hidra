@@ -6,11 +6,11 @@ namespace Hidra.Core.Models
     public class DeviceCache
     {
 
-        public string Title { get; set; }
-        public string ProviderName { get; set; }
-        public string DeviceHandle { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string ProviderName { get; set; } = string.Empty;
+        public string DeviceHandle { get; set; } = string.Empty;
         public int DeviceNumber { get; set; }
-        public List<DeviceBindingNode> DeviceBindingMenu { get; set; }
+        public List<DeviceBindingNode> DeviceBindingMenu { get; set; } = new List<DeviceBindingNode>();
         public bool Blockable { get; set; }
 
     }

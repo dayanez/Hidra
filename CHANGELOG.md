@@ -5,6 +5,50 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-04
+
+### Added
+
+- Regression tests for `ProfilesManager.CopyProfile`'s Guid-remapping fix (nested child profile
+  Guids, device binding rewiring on both the input and output side, and bindings to an ancestor
+  profile's device configuration correctly left alone), none of which had coverage before. Writing
+  them surfaced that `Hidra.Tests` had no way to exercise plugin serialization at all (`PluginsManager`
+  discovers plugins via MEF from a `Plugins/<AssemblyName>/` folder that only `Hidra.csproj`'s build
+  populated); `Hidra.Tests.csproj` now gets the same folder via its own `CopyPluginsForTests` target.
+- Test coverage for the four `Hidra.Core` Managers that had none (`BindingManager`, `DevicesManager`,
+  `PluginsManager`, `ProcessProfileSwitcher`) and 13 of the 14 previously-untested plugins. A few
+  small `private` -> `internal static` visibility changes made the pure decision logic in those
+  Managers testable without needing to drive a live WPF Dispatcher or native device provider.
+  `ButtonToAction` is the one plugin deliberately left untested: its `Update()` can lock the screen,
+  launch a process, or send real synthetic input, which isn't safe to trigger from an automated test
+  without first refactoring `ActionExecutor` for testability.
+- `.editorconfig` and `Directory.Build.props` (enabling the built-in .NET analyzers,
+  `AnalysisLevel=latest-recommended`, solution-wide). Both surface real, pre-existing formatting and
+  code-quality drift across the codebase; that backlog is expected to shrink over time; it's not
+  fixed in this pass.
+- CodeQL static analysis (`.github/workflows/codeql.yml`), running on every push/PR to `master` and
+  weekly, matching the auditability bar `SECURITY.md` already sets for this project.
+
+### Changed
+
+- Enabled nullable reference types (`Nullable=enable`) in `Hidra.Core`, and annotated the ~105
+  warnings that surfaced across the engine and model layer with real per-property judgment calls
+  rather than blanket suppressions. Found and documented (without changing behavior) a few genuine
+  pre-existing null-safety gaps this uncovered: `InputSubscription.DeviceSubscription` can be null
+  when a binding's device configuration can't be found even though `IsBound` is still true, and
+  `DevicesManager.ReadDeviceCache` doesn't catch a malformed-but-parseable cache file deserializing
+  to `null`. The WPF app and the other three projects are intentionally left on `Nullable=disable`
+  for now; that surface is much larger (particularly the UI layer) and lower-value to annotate than
+  the engine, and deserves its own pass rather than being rushed alongside this one.
+
+### Fixed
+
+- `Hidra.csproj` had `GenerateAssemblyInfo` disabled (it keeps a hand-written `AssemblyInfo.cs`
+  from before the .NET 8 SDK port), which meant the SDK's usual `[SupportedOSPlatform("windows")]`
+  auto-injection for a `net8.0-windows` WPF app never happened. Every Windows-only API the app calls
+  (tray icon, registry, mutex ACLs, WPF theming) was tripping CA1416 as if Hidra might run on a
+  non-Windows platform; it never can. Adding the attribute by hand cleared all 82 of those warnings.
+
 ## [0.1.0] - 2026-09-03
 
 First tagged Hidra release. Everything below was built during the fork from Universal Control

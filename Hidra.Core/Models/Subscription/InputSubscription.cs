@@ -10,7 +10,10 @@ namespace Hidra.Core.Models.Subscription
         public Guid SubscriptionStateGuid { get; set; }
         public Guid DeviceBindingSubscriptionGuid { get; set; }
         public bool IsOverwritten { get; set; }
-        public DeviceSubscription DeviceSubscription { get; }
+        // Null when GetDeviceConfiguration() can't find the device configuration this binding
+        // refers to (e.g. a device that's no longer connected); the constructor returns early in
+        // that case rather than constructing a DeviceSubscription.
+        public DeviceSubscription? DeviceSubscription { get; }
 
         public InputSubscription(Mapping mapping, DeviceBinding deviceBinding, Profile profile, Guid subscriptionStateGuid)
         {
@@ -26,11 +29,11 @@ namespace Hidra.Core.Models.Subscription
             var device = mapping.IsShadowMapping
                 ? deviceConfiguration.ShadowDevices[mapping.ShadowDeviceNumber]
                 : deviceConfiguration.Device;
-            
+
             DeviceSubscription = new DeviceSubscription(device);
         }
 
-        private DeviceConfiguration GetDeviceConfiguration()
+        private DeviceConfiguration? GetDeviceConfiguration()
         {
             return Profile.GetDeviceConfiguration(DeviceBinding.DeviceIoType, DeviceBinding.DeviceConfigurationGuid);
         }

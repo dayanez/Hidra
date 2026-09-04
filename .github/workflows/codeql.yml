@@ -1,0 +1,39 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  schedule:
+    # Catches newly-disclosed vulnerability patterns in unchanged code, not just new commits.
+    - cron: "17 3 * * 1"
+
+jobs:
+  analyze:
+    # Hidra is a WPF app; it only builds on Windows (see build.yml).
+    runs-on: windows-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+
+      - name: Restore
+        run: dotnet restore Hidra.sln
+
+      - name: Build
+        run: dotnet build Hidra.sln --configuration Release --no-restore
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

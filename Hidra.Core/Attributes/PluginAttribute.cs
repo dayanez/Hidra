@@ -6,8 +6,8 @@ namespace Hidra.Core.Attributes
     public class PluginAttribute : Attribute
     {
         public string Name { get; }
-        public string Description { get; set; }
-        public string Group { get; set; }
+        public string? Description { get; set; }
+        public string? Group { get; set; }
         public bool Disabled { get; set; }
 
         public PluginAttribute(string name)

@@ -46,8 +46,11 @@ namespace Hidra.Core.Models.Binding
         /* Runtime */
         [XmlIgnore]
         public Guid Guid { get; }
+        // Null for an Outputs binding right after a Plugin is constructed (see Plugin.cs); always
+        // set by the time any binding-mutating method below is actually invoked, since that only
+        // happens once the plugin is attached to a mapping via Plugin.SetProfile.
         [XmlIgnore]
-        public Profile Profile { get; set; }
+        public Profile? Profile { get; set; }
         [XmlIgnore]
         public DeviceIoType DeviceIoType { get; set; }
         [XmlIgnore]
@@ -67,8 +70,11 @@ namespace Hidra.Core.Models.Binding
 
 
         public delegate void ValueChanged(short value);
-        
-        private Action<short> _callback;
+
+        // Null until something sets Callback (Mapping.PrepareMapping, for a live subscription);
+        // InputChanged() below is only ever invoked by an active subscription, by which point
+        // this is always set.
+        private Action<short>? _callback;
 
         [XmlIgnore]
         public Action<short> Callback
@@ -81,7 +87,7 @@ namespace Hidra.Core.Models.Binding
             }
         }
         [XmlIgnore]
-        public ValueChanged OutputSink { get; set; }
+        public ValueChanged? OutputSink { get; set; }
 
         private short _currentValue;
         [XmlIgnore]
@@ -100,9 +106,9 @@ namespace Hidra.Core.Models.Binding
             Guid = Guid.NewGuid();
         }
 
-        public DeviceBinding(Action<short> callback, Profile profile, DeviceIoType deviceIoType)
+        public DeviceBinding(Action<short>? callback, Profile? profile, DeviceIoType deviceIoType)
         {
-            Callback = callback;
+            Callback = callback!;
             Profile = profile;
             DeviceIoType = deviceIoType;
             Guid = Guid.NewGuid();
@@ -113,14 +119,14 @@ namespace Hidra.Core.Models.Binding
         {
             DeviceConfigurationGuid = deviceConfigurationGuid;
             if (Block && !IsBlockable()) Block = false;
-            Profile.Context.ContextChanged();
+            Profile!.Context.ContextChanged();
             OnPropertyChanged(nameof(DeviceConfigurationGuid));
         }
 
         public void SetBlock(bool block)
         {
             Block = block;
-            Profile.Context.ContextChanged();
+            Profile!.Context.ContextChanged();
         }
 
         public void SetKeyTypeValue(int type, int value, int subValue)
@@ -129,17 +135,17 @@ namespace Hidra.Core.Models.Binding
             KeyValue = value;
             KeySubValue = subValue;
             IsBound = true;
-            Profile.Context.ContextChanged();
+            Profile!.Context.ContextChanged();
         }
-        
+
         public string BoundName()
         {
-            return Profile.GetDeviceConfiguration(DeviceIoType, DeviceConfigurationGuid)?.Device.GetBindingName(this) ?? "Device unavailable";
+            return Profile!.GetDeviceConfiguration(DeviceIoType, DeviceConfigurationGuid)?.Device.GetBindingName(this) ?? "Device unavailable";
         }
 
         public bool IsBlockable()
         {
-            var device = Profile.GetDeviceConfiguration(DeviceIoType, DeviceConfigurationGuid)?.Device;
+            var device = Profile!.GetDeviceConfiguration(DeviceIoType, DeviceConfigurationGuid)?.Device;
             if (device == null) return false;
 
             var deviceBindingNodes = Profile.Context.DevicesManager.GetDeviceBindingMenu(device, DeviceIoType);
@@ -153,7 +159,8 @@ namespace Hidra.Core.Models.Binding
 
                 if (node.IsBinding)
                 {
-                    var info = node.DeviceBindingInfo;
+                    // IsBinding being true guarantees DeviceBindingInfo is set (see its definition).
+                    var info = node.DeviceBindingInfo!;
                     if (info.KeyType == KeyType && info.KeyValue == KeyValue && info.KeySubValue == KeySubValue) return info.Blockable;
                 }
 
@@ -189,7 +196,7 @@ namespace Hidra.Core.Models.Binding
 
         public void EnterBindMode()
         {
-            Profile.Context.BindingManager.BeginBindMode(this);
+            Profile!.Context.BindingManager.BeginBindMode(this);
             Profile.Context.BindingManager.EndBindModeHandler += OnEndBindModeHandler;
             IsInBindMode = true;
         }
@@ -201,26 +208,26 @@ namespace Hidra.Core.Models.Binding
             KeySubValue = 0;
             DeviceConfigurationGuid = Guid.Empty;
             IsBound = false;
-            Profile.Context.ContextChanged();
+            Profile!.Context.ContextChanged();
         }
 
         private void OnEndBindModeHandler(DeviceBinding deviceBinding)
         {
             if (deviceBinding.Guid != Guid) return;
             IsInBindMode = false;
-            Profile.Context.BindingManager.EndBindModeHandler -= OnEndBindModeHandler;
+            Profile!.Context.BindingManager.EndBindModeHandler -= OnEndBindModeHandler;
         }
 
         private void InputChanged(short value)
         {
             CurrentValue = value;
-            _callback(value);
+            _callback!(value);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

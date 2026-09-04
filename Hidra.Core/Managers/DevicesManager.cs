@@ -51,7 +51,7 @@ namespace Hidra.Core.Managers
                         if (result.Contains(cachedDevice)) continue;
                         result.Add(cachedDevice);
                     }
-                    
+
                 }
             }
             return result;
@@ -75,7 +75,9 @@ namespace Hidra.Core.Managers
 
             try
             {
-                return availableDeviceList.Find(d => d.DeviceHandle == device.DeviceHandle).GetDeviceBindingMenu();
+                // A missing match (Find returning null) is deliberately handled by the catch
+                // below rather than a null check.
+                return availableDeviceList.Find(d => d.DeviceHandle == device.DeviceHandle)!.GetDeviceBindingMenu();
             }
             catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException || ex is NullReferenceException)
             {
@@ -89,7 +91,7 @@ namespace Hidra.Core.Managers
             }
         }
 
-        private static List<DeviceBindingNode> BuildDeviceBindingMenu(List<DeviceReportNode> deviceNodes, DeviceIoType type)
+        internal static List<DeviceBindingNode>? BuildDeviceBindingMenu(List<DeviceReportNode>? deviceNodes, DeviceIoType type)
         {
             var result = new List<DeviceBindingNode>();
             if (deviceNodes == null) return result;
@@ -103,7 +105,7 @@ namespace Hidra.Core.Managers
                 };
 
                 if (groupNode.ChildrenNodes == null) groupNode.ChildrenNodes = new List<DeviceBindingNode>();
-                
+
 
                 foreach (var bindingInfo in deviceNode.Bindings)
                 {
@@ -135,7 +137,7 @@ namespace Hidra.Core.Managers
             var success = true;
             RefreshDeviceList();
             var availableDeviceList = GetAvailableDeviceList(DeviceIoType.Input, false);
-            
+
             foreach (var device in availableDeviceList)
             {
                 success &= SaveDeviceCache(device);
@@ -184,7 +186,7 @@ namespace Hidra.Core.Managers
             foreach (var deviceCacheFile in deviceCacheFiles)
             {
                 var device = ReadDeviceCache(provider, deviceCacheFile);
-                if (device != null)  result.Add(device);
+                if (device != null) result.Add(device);
             }
 
             _providerCache.Add(provider, result);
@@ -192,17 +194,21 @@ namespace Hidra.Core.Managers
 
         }
 
-        private static Device ReadDeviceCache(string provider, string devicePath)
+        private static Device? ReadDeviceCache(string provider, string devicePath)
         {
             if (string.IsNullOrEmpty(provider) || string.IsNullOrEmpty(devicePath)) return null;
 
             try
             {
-                using (var fileStream = new FileStream(devicePath, FileMode.Open))  
+                using (var fileStream = new FileStream(devicePath, FileMode.Open))
                 {
                     using (var reader = new StreamReader(fileStream))
                     {
-                        return new Device(JsonConvert.DeserializeObject<DeviceCache>(reader.ReadToEnd()));
+                        // Pre-existing gap, not introduced here: a malformed-but-parseable cache
+                        // file (e.g. literal "null") makes DeserializeObject return null instead
+                        // of throwing, which isn't caught by the IOException/InvalidOperationException
+                        // handlers below.
+                        return new Device(JsonConvert.DeserializeObject<DeviceCache>(reader.ReadToEnd())!);
                     }
                 }
             }

@@ -6,24 +6,24 @@ namespace Hidra.Core.Utilities
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private enum LogLevel{ Trace, Debug, Info, Warn, Error, Fatal }
+        private enum LogLevel { Trace, Debug, Info, Warn, Error, Fatal }
 
-        public static void Trace(string message, Exception e = null)
+        public static void Trace(string message, Exception? e = null)
         {
             Log(LogLevel.Trace, message, e);
         }
 
-        public static void Debug(string message, Exception e = null)
+        public static void Debug(string message, Exception? e = null)
         {
             Log(LogLevel.Debug, message, e);
         }
 
-        public static void Info(string message, Exception e = null)
+        public static void Info(string message, Exception? e = null)
         {
             Log(LogLevel.Info, message, e);
         }
 
-        public static void Warn(string message, Exception e = null)
+        public static void Warn(string message, Exception? e = null)
         {
             Log(LogLevel.Warn, message, e);
         }
@@ -38,7 +38,7 @@ namespace Hidra.Core.Utilities
             Log(LogLevel.Fatal, message, e);
         }
 
-        private static void Log(LogLevel logLevel, string message, Exception e)
+        private static void Log(LogLevel logLevel, string message, Exception? e)
         {
             switch (logLevel)
             {

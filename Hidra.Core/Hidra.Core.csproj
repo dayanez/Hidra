@@ -6,7 +6,7 @@
     <RootNamespace>Hidra.Core</RootNamespace>
     <AssemblyName>Hidra.Core</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

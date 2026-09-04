@@ -32,14 +32,17 @@ namespace Hidra.Core.Managers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Context _context;
         private List<DeviceConfiguration> _deviceConfigurationList;
-        private DeviceBinding _deviceBinding;
-        private DispatcherTimer BindingTimer;
+        // These three are only ever set once bind mode actually starts (BeginBindMode); every
+        // place that reads them without a null-check below only runs while bindmodeActive is
+        // true, which only happens after BeginBindMode has set them.
+        private DeviceBinding? _deviceBinding;
+        private DispatcherTimer? BindingTimer;
         private readonly object bindmodeLock = new object();
         private bool bindmodeActive;
-        private Dispatcher _uiDispatcher;
+        private Dispatcher? _uiDispatcher;
 
         public delegate void EndBindModeDelegate(DeviceBinding deviceBinding);
-        public event EndBindModeDelegate EndBindModeHandler;
+        public event EndBindModeDelegate? EndBindModeHandler;
 
         public BindingManager(Context context)
         {
@@ -56,7 +59,7 @@ namespace Hidra.Core.Managers
 
             if (_deviceConfigurationList.Count > 0) EndBindMode();
             _deviceBinding = deviceBinding;
-            foreach (var deviceConfiguration in deviceBinding.Profile.GetDeviceConfigurationList(deviceBinding.DeviceIoType))
+            foreach (var deviceConfiguration in deviceBinding.Profile!.GetDeviceConfigurationList(deviceBinding.DeviceIoType))
             {
                 _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(deviceConfiguration.Device), GetDeviceDescriptor(deviceConfiguration.Device), InputChanged);
                 _deviceConfigurationList.Add(deviceConfiguration);
@@ -70,7 +73,7 @@ namespace Hidra.Core.Managers
             bindmodeActive = true;
         }
 
-        private void BindingTimerOnTick(object sender, EventArgs e)
+        private void BindingTimerOnTick(object? sender, EventArgs e)
         {
             BindModeProgress = _bindModeProgress - BindModeTick;
             if (BindModeProgress <= 0.0) EndBindMode();
@@ -83,8 +86,8 @@ namespace Hidra.Core.Managers
                 Logger.Debug($"End bind mode");
                 if (!bindmodeActive) return;
 
-                EndBindModeHandler?.Invoke(_deviceBinding);
-                BindingTimer.Stop();
+                EndBindModeHandler?.Invoke(_deviceBinding!);
+                BindingTimer!.Stop();
 
                 foreach (var deviceConfiguration in _deviceConfigurationList)
                 {
@@ -121,22 +124,22 @@ namespace Hidra.Core.Managers
         // marshaled over before doing anything with it.
         private void InputChanged(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor, BindingReport bindingReport, short value)
         {
-            _uiDispatcher.Invoke(() => InputChangedOnUiThread(providerDescriptor, deviceDescriptor, bindingReport, value));
+            _uiDispatcher!.Invoke(() => InputChangedOnUiThread(providerDescriptor, deviceDescriptor, bindingReport, value));
         }
 
         private void InputChangedOnUiThread(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor, BindingReport bindingReport, short value)
         {
             if (!bindmodeActive) return;
-            if (!DeviceBinding.MapCategory(bindingReport.Category).Equals(_deviceBinding.DeviceBindingCategory)) return;
+            if (!DeviceBinding.MapCategory(bindingReport.Category).Equals(_deviceBinding!.DeviceBindingCategory)) return;
             if (!IsInputValid(bindingReport.Category, value)) return;
 
             var deviceConfiguration = FindDeviceConfiguration(providerDescriptor, deviceDescriptor);
-            _deviceBinding.SetDeviceConfigurationGuid(deviceConfiguration.Guid);
+            _deviceBinding.SetDeviceConfigurationGuid(deviceConfiguration!.Guid);
             _deviceBinding.SetKeyTypeValue((int)bindingReport.BindingDescriptor.Type, bindingReport.BindingDescriptor.Index, bindingReport.BindingDescriptor.SubIndex);
             EndBindMode();
         }
 
-        private bool IsInputValid(BindingCategory bindingCategory, short value)
+        internal static bool IsInputValid(BindingCategory bindingCategory, short value)
         {
             switch (DeviceBinding.MapCategory(bindingCategory))
             {
@@ -154,7 +157,7 @@ namespace Hidra.Core.Managers
             }
         }
 
-        private DeviceConfiguration FindDeviceConfiguration(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor)
+        private DeviceConfiguration? FindDeviceConfiguration(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor)
         {
             return _deviceConfigurationList.Find(deviceConfiguration => deviceConfiguration.Device.ProviderName == providerDescriptor.ProviderName
                                          && deviceConfiguration.Device.DeviceHandle == deviceDescriptor.DeviceHandle
@@ -167,10 +170,10 @@ namespace Hidra.Core.Managers
             EndBindMode();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

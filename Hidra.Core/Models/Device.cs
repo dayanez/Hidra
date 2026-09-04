@@ -19,18 +19,21 @@ namespace Hidra.Core.Models
 
         /* Persistence */
         [XmlAttribute]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         [XmlAttribute]
-        public string ProviderName { get; set; }
+        public string ProviderName { get; set; } = string.Empty;
         [XmlAttribute]
-        public string DeviceHandle { get; set; }
+        public string DeviceHandle { get; set; } = string.Empty;
         [XmlAttribute]
         public int DeviceNumber { get; set; }
 
         /* Runtime */
         [XmlIgnore]
-        private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
-        [XmlIgnore] public Profile Profile { get; set; }
+        private List<DeviceBindingNode>? DeviceBindingMenu { get; set; }
+        // Null until the device is attached to a profile's device configuration list (see
+        // Profile.GetDeviceConfigurationList / AddDeviceConfigurations); a Device returned by
+        // DevicesManager's available-device list isn't attached to any profile yet.
+        [XmlIgnore] public Profile? Profile { get; set; }
         [XmlIgnore] public bool IsCache { get; set; }
 
         #region Constructors
@@ -47,7 +50,7 @@ namespace Hidra.Core.Models
             DeviceNumber = deviceNumber;
         }
 
-        public Device(DeviceReport device, ProviderReport providerReport, List<DeviceBindingNode> deviceBindingMenu) : this()
+        public Device(DeviceReport device, ProviderReport providerReport, List<DeviceBindingNode>? deviceBindingMenu) : this()
         {
             Title = device.DeviceName;
             ProviderName = providerReport.ProviderDescriptor.ProviderName;
@@ -68,14 +71,14 @@ namespace Hidra.Core.Models
         }
 
         #endregion
-        
+
         public string GetBindingName(DeviceBinding deviceBinding)
         {
             if (!deviceBinding.IsBound) return "Not bound";
-            return GetBindingName(deviceBinding, GetDeviceBindingMenu(deviceBinding.Profile.Context, deviceBinding.DeviceIoType)) ?? "Unknown input";
+            return GetBindingName(deviceBinding, GetDeviceBindingMenu(deviceBinding.Profile!.Context, deviceBinding.DeviceIoType)) ?? "Unknown input";
         }
 
-        private static string GetBindingName(DeviceBinding deviceBinding, List<DeviceBindingNode> deviceBindingNodes)
+        private static string? GetBindingName(DeviceBinding deviceBinding, List<DeviceBindingNode>? deviceBindingNodes)
         {
             if (deviceBindingNodes == null) return null;
             foreach (var deviceBindingNode in deviceBindingNodes)
@@ -95,8 +98,9 @@ namespace Hidra.Core.Models
 
         private static bool deviceBindingMatchesNode(DeviceBinding deviceBinding, DeviceBindingNode deviceBindingNode)
         {
-            return deviceBindingNode.IsBinding && 
-                   deviceBindingNode.DeviceBindingInfo.KeyType == deviceBinding.KeyType &&
+            // IsBinding being true guarantees DeviceBindingInfo is set (see its definition).
+            return deviceBindingNode.IsBinding &&
+                   deviceBindingNode.DeviceBindingInfo!.KeyType == deviceBinding.KeyType &&
                    deviceBindingNode.DeviceBindingInfo.KeySubValue == deviceBinding.KeySubValue &&
                    deviceBindingNode.DeviceBindingInfo.KeyValue == deviceBinding.KeyValue;
         }
@@ -126,10 +130,10 @@ namespace Hidra.Core.Models
             return $"Device:{{{Title}}} Provider:{{{ProviderName}}} Handle:{{{DeviceHandle}}} Num:{{{DeviceNumber}}}";
         }
 
-        public override bool Equals(Object other)
+        public override bool Equals(object? other)
         {
             if ((other == null) || GetType() != other.GetType()) return false;
-            var otherDevice = other as Device;
+            var otherDevice = (Device)other;
             return string.Equals(ProviderName, otherDevice.ProviderName) && string.Equals(DeviceHandle, otherDevice.DeviceHandle) && DeviceNumber == otherDevice.DeviceNumber;
         }
 

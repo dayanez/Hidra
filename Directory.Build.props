@@ -1,0 +1,16 @@
+<Project>
+
+  <!--
+    Applies to every project under this directory (MSBuild auto-imports Directory.Build.props).
+    Turns on the built-in .NET code analyzers so the build itself backs the auditability bar
+    SECURITY.md sets for this project, instead of relying on review discipline alone. These are
+    warnings, not errors, so they don't fail the build; enabling this surfaced a real, pre-existing
+    backlog across the solution (see CHANGELOG/AGENTS.md for how that's being worked through) that
+    is expected to shrink over time rather than be fixed in one pass.
+  -->
+  <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+  </PropertyGroup>
+
+</Project>

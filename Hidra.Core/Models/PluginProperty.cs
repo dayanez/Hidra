@@ -10,17 +10,17 @@ namespace Hidra.Core.Models
         public string Name { get; }
         public Plugin Plugin { get; }
         public int Order { get; }
-        public string Group { get; }
+        public string? Group { get; }
 
         public PropertyInfo PropertyInfo { get; }
         public dynamic Property
         {
-            get => PropertyInfo.GetValue(Plugin);
+            get => PropertyInfo.GetValue(Plugin)!;
             set
             {
                 if (value.Equals(PropertyInfo.GetValue(Plugin))) return;
                 PropertyInfo.SetValue(Plugin, Convert.ChangeType(value, PropertyInfo.PropertyType, CultureInfo.InvariantCulture));
-                if (Plugin.Profile.IsActive())
+                if (Plugin.Profile!.IsActive())
                 {
                     Plugin.InitializeCacheValues();
                     Plugin.OnPropertyChanged();
@@ -29,7 +29,7 @@ namespace Hidra.Core.Models
             }
         }
 
-        public PluginProperty(Plugin plugin, PropertyInfo propertyInfo, string name, int order = 0, string group = null)
+        public PluginProperty(Plugin plugin, PropertyInfo propertyInfo, string name, int order = 0, string? group = null)
         {
             Plugin = plugin;
             PropertyInfo = propertyInfo;
@@ -38,9 +38,9 @@ namespace Hidra.Core.Models
             Group = group;
         }
 
-        public int CompareTo(PluginProperty other)
+        public int CompareTo(PluginProperty? other)
         {
-            return Order.CompareTo(other.Order);
+            return Order.CompareTo(other!.Order);
         }
 
         public PropertyValidationResult Validate(dynamic value)

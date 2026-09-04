@@ -17,26 +17,29 @@ namespace Hidra.Core.Models
 
         /* Persistence */
         [XmlAttribute]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         [XmlAttribute]
         public Guid Guid { get; set; }
         /// <summary>
         /// If set, this profile is automatically activated whenever a process with this
         /// executable file name (e.g. "game.exe") becomes the focused window.
         /// </summary>
-        public string AutoSwitchExecutable { get; set; }
-        public List<Profile> ChildProfiles { get; set; }
-        public List<Mapping> Mappings { get; set; }
+        public string? AutoSwitchExecutable { get; set; }
+        public List<Profile> ChildProfiles { get; set; } = new List<Profile>();
+        public List<Mapping> Mappings { get; set; } = new List<Mapping>();
 
-        public List<DeviceConfiguration> InputDeviceConfigurations { get; set; }
-        public List<DeviceConfiguration> OutputDeviceConfigurations { get; set; }
+        public List<DeviceConfiguration> InputDeviceConfigurations { get; set; } = new List<DeviceConfiguration>();
+        public List<DeviceConfiguration> OutputDeviceConfigurations { get; set; } = new List<DeviceConfiguration>();
 
 
         /* Runtime */
+        // Null only in the gap between XmlSerializer using the parameterless constructor below
+        // and PostLoad() running; every other construction path (the Context-taking constructors,
+        // or PostLoad itself) sets it, and nothing reads Context before PostLoad has run.
         [XmlIgnore]
-        public Context Context;
+        public Context Context = null!;
         [XmlIgnore]
-        public Profile ParentProfile { get; set; }
+        public Profile? ParentProfile { get; set; }
 
         #region Constructors
 
@@ -54,13 +57,9 @@ namespace Hidra.Core.Models
         private void Init()
         {
             Guid = Guid.NewGuid();
-            ChildProfiles = new List<Profile>();
-            Mappings = new List<Mapping>();
-            InputDeviceConfigurations = new List<DeviceConfiguration>();
-            OutputDeviceConfigurations = new List<DeviceConfiguration>();
         }
 
-        public Profile(Context context, Profile parentProfile = null) : this(context)
+        public Profile(Context context, Profile? parentProfile = null) : this(context)
         {
             ParentProfile = parentProfile;
         }
@@ -69,8 +68,8 @@ namespace Hidra.Core.Models
 
         #region Actions
 
-        public static Profile CreateProfile(Context context, string title, List<DeviceConfiguration> inputDevices,
-            List<DeviceConfiguration> outputDevices, Profile parent = null)
+        public static Profile CreateProfile(Context context, string title, List<DeviceConfiguration>? inputDevices,
+            List<DeviceConfiguration>? outputDevices, Profile? parent = null)
         {
             var profile = new Profile(context, parent)
             {
@@ -130,7 +129,7 @@ namespace Hidra.Core.Models
 
         internal void PrepareProfile()
         {
-            
+
         }
 
         #endregion
@@ -156,7 +155,7 @@ namespace Hidra.Core.Models
 
         #region Device
 
-        public DeviceConfiguration GetDeviceConfiguration(DeviceIoType deviceIoType, Guid deviceConfigurationGuid)
+        public DeviceConfiguration? GetDeviceConfiguration(DeviceIoType deviceIoType, Guid deviceConfigurationGuid)
         {
             var deviceList = GetDeviceConfigurationList(deviceIoType);
             return deviceList.FirstOrDefault(configuration => configuration.Guid == deviceConfigurationGuid);
@@ -222,7 +221,9 @@ namespace Hidra.Core.Models
 
         public bool AddNewPlugin(Mapping mapping, Plugin plugin)
         {
-            return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType()));
+            // Every built-in plugin type has a public parameterless constructor (it's how the
+            // plugin toolbox instantiates them), so this is never actually null in practice.
+            return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType())!);
         }
 
         public bool AddPlugin(Mapping mapping, Plugin plugin)
@@ -275,12 +276,13 @@ namespace Hidra.Core.Models
         /// <returns></returns>
         public bool IsActive()
         {
-            return Context.SubscriptionsManager.GetActiveProfile() != null && Context.SubscriptionsManager.GetActiveProfile().Guid == Guid;
+            var activeProfile = Context.SubscriptionsManager.GetActiveProfile();
+            return activeProfile != null && activeProfile.Guid == Guid;
         }
 
         #endregion
 
-        internal void PostLoad(Context context, Profile parentProfile = null)
+        internal void PostLoad(Context context, Profile? parentProfile = null)
         {
             Context = context;
             ParentProfile = parentProfile;
@@ -296,10 +298,10 @@ namespace Hidra.Core.Models
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

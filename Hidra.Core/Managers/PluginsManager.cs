@@ -15,7 +15,7 @@ namespace Hidra.Core.Managers
         private CompositionContainer _Container;
 
         [ImportMany(typeof(Plugin))]
-        public List<Plugin> Plugins { get; set; }
+        public List<Plugin> Plugins { get; set; } = new List<Plugin>();
 
         public PluginsManager(string basePath)
         {
@@ -43,7 +43,8 @@ namespace Hidra.Core.Managers
 
         public Plugin GetNewPlugin(Plugin plugin)
         {
-            return (Plugin)Activator.CreateInstance(plugin.GetType());
+            // Every built-in plugin type has a public parameterless constructor.
+            return (Plugin)Activator.CreateInstance(plugin.GetType())!;
         }
     }
 }

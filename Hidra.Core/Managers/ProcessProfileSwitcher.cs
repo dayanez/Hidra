@@ -18,7 +18,7 @@ namespace Hidra.Core.Managers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Context _context;
         private readonly DispatcherTimer _timer;
-        private string _lastForegroundExecutable;
+        private string? _lastForegroundExecutable;
 
         public bool Enabled { get; set; } = true;
 
@@ -34,7 +34,7 @@ namespace Hidra.Core.Managers
         {
             if (!Enabled) return;
 
-            string executable;
+            string? executable;
             try
             {
                 executable = GetForegroundExecutableName();
@@ -56,7 +56,7 @@ namespace Hidra.Core.Managers
             profile.ActivateProfile();
         }
 
-        private static Profile FindProfileFor(string executable, List<Profile> profiles)
+        internal static Profile? FindProfileFor(string executable, List<Profile> profiles)
         {
             foreach (var profile in profiles)
             {
@@ -72,7 +72,7 @@ namespace Hidra.Core.Managers
             return null;
         }
 
-        private static string GetForegroundExecutableName()
+        private static string? GetForegroundExecutableName()
         {
             var hwnd = GetForegroundWindow();
             if (hwnd == IntPtr.Zero) return null;

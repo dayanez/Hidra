@@ -27,7 +27,7 @@ namespace Hidra.Core.Managers
             }
         }
 
-        internal SubscriptionState SubscriptionState { get; set; }
+        internal SubscriptionState? SubscriptionState { get; set; }
         private readonly Context _context;
 
         public SubscriptionsManager(Context context)
@@ -37,7 +37,7 @@ namespace Hidra.Core.Managers
 
         #region ManagerApi
 
-        public Profile GetActiveProfile()
+        public Profile? GetActiveProfile()
         {
             return SubscriptionState?.ActiveProfile;
         }
@@ -73,7 +73,7 @@ namespace Hidra.Core.Managers
             Logger.Debug("SubscriptionState successfully activated");
 
             if (!DeactivateCurrentProfile()) Logger.Error("Failed to deactivate previous profile successfully");
-            
+
             FinalizeNewState(profile, state);
 
             return true;
@@ -102,7 +102,7 @@ namespace Hidra.Core.Managers
         public bool DeactivateCurrentProfile()
         {
             if (SubscriptionState == null) return true;
-            
+
             var state = SubscriptionState;
             if (!state.IsActive) return true;
 
@@ -166,7 +166,7 @@ namespace Hidra.Core.Managers
             }
 
             state.AddMappings(profile, state.OutputDeviceConfigurationSubscriptions);
-            
+
             return success;
         }
         private bool ConfigureFiltersForState(SubscriptionState state, Profile profile)
@@ -223,7 +223,7 @@ namespace Hidra.Core.Managers
 
 
         #region Subscriber Actions
-        
+
         private bool SubscribeDeviceBindingInput(SubscriptionState state, InputSubscription deviceBindingSubscription)
         {
             if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
@@ -277,7 +277,10 @@ namespace Hidra.Core.Managers
 
         private InputSubscriptionRequest GetInputSubscriptionRequest(SubscriptionState state, InputSubscription deviceBindingSubscription)
         {
-            var device = deviceBindingSubscription.DeviceSubscription.Device;
+            // Pre-existing gap, not introduced here: DeviceSubscription is null if the binding's
+            // device configuration couldn't be found (e.g. device disconnected) even though
+            // IsBound is still true, which the caller only checks IsBound for.
+            var device = deviceBindingSubscription.DeviceSubscription!.Device;
             return new InputSubscriptionRequest()
             {
                 ProviderDescriptor = GetProviderDescriptor(device),
@@ -345,10 +348,10 @@ namespace Hidra.Core.Managers
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

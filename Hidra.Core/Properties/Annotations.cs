@@ -22,6 +22,10 @@ SOFTWARE. */
 
 using System;
 
+// Vendored third-party file (see the license header above); kept as-is rather than annotated
+// property-by-property, matching how Hidra.IOWrapper's own vendored code is treated (see
+// AGENTS.md).
+#nullable disable
 #pragma warning disable 1591
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global

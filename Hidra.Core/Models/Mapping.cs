@@ -12,20 +12,24 @@ namespace Hidra.Core.Models
     {
         /* Persistence */
         [XmlAttribute]
-        public string Title { get; set; }
-        public List<DeviceBinding> DeviceBindings { get; set; }
-        public List<Plugin> Plugins { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public List<DeviceBinding> DeviceBindings { get; set; } = new List<DeviceBinding>();
+        public List<Plugin> Plugins { get; set; } = new List<Plugin>();
 
         /* Runtime */
-        private Profile Profile { get; set; }
-        private List<short> InputCache { get; set; }
-        private List<CallbackMultiplexer> Multiplexer { get; set; }
-        
+        // Profile: null only in the gap between XmlSerializer's parameterless constructor and
+        // PostLoad(), same as Profile.Context. InputCache/Multiplexer: null until PrepareMapping
+        // runs; Update() (the only reader) is only ever called after that.
+        private Profile Profile { get; set; } = null!;
+        private List<short> InputCache { get; set; } = null!;
+        private List<CallbackMultiplexer> Multiplexer { get; set; } = null!;
+
 
         internal bool IsShadowMapping { get; set; }
         internal int ShadowDeviceNumber { get; set; }
         internal int PossibleShadowClones => CountPossibleShadowClones();
-        internal FilterState FilterState { get; set; }
+        // Set by PrepareMapping, before a live Update() cycle begins.
+        internal FilterState FilterState { get; set; } = null!;
 
         private int CountPossibleShadowClones()
         {
@@ -52,15 +56,12 @@ namespace Hidra.Core.Models
             get
             {
                 var mapping = GetOverridenMapping();
-                return mapping != null ? $"{Title} (Overrides {GetOverridenMapping().Profile.Title})" : Title;
+                return mapping != null ? $"{Title} (Overrides {mapping.Profile.Title})" : Title;
             }
         }
 
         public Mapping()
         {
-            DeviceBindings = new List<DeviceBinding>();
-            Plugins = new List<Plugin>();
-            
             IsShadowMapping = false;
             ShadowDeviceNumber = 0;
         }
@@ -105,7 +106,7 @@ namespace Hidra.Core.Models
             Plugins.ForEach(p => p.RuntimeMapping = this);
         }
 
-        internal Mapping GetOverridenMapping()
+        internal Mapping? GetOverridenMapping()
         {
             var list = new List<Mapping>();
             var parentProfile = Profile.ParentProfile;
@@ -126,13 +127,13 @@ namespace Hidra.Core.Models
 
             return null;
         }
-        
+
         public void Update(short value)
         {
             foreach (var plugin in Plugins)
             {
                 if (plugin.IsFiltered()) continue;
-                
+
                 plugin.Update(InputCache.ToArray());
             }
         }
@@ -200,9 +201,11 @@ namespace Hidra.Core.Models
             return clonedMapping;
         }
 
-        internal void PostLoad(Context context, Profile profile = null)
+        internal void PostLoad(Context context, Profile? profile = null)
         {
-            Profile = profile;
+            // In practice always called with a real profile (Profile.PostLoad's loop always
+            // passes 'this'); the default lets PostLoad's own signature stay optional.
+            Profile = profile!;
             foreach (var deviceBinding in DeviceBindings)
             {
                 deviceBinding.Profile = profile;

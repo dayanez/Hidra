@@ -6,9 +6,9 @@ namespace Hidra.Core.Models.Binding
     public class DeviceBindingNode
     {
         [XmlAttribute]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         public bool IsBinding => DeviceBindingInfo != null && (ChildrenNodes == null || ChildrenNodes.Count == 0);
-        public List<DeviceBindingNode> ChildrenNodes { get; set; }
-        public DeviceBindingInfo DeviceBindingInfo { get; set; }
+        public List<DeviceBindingNode>? ChildrenNodes { get; set; }
+        public DeviceBindingInfo? DeviceBindingInfo { get; set; }
     }
 }

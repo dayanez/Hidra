@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Hidra.Core.Models.Binding;
 
 namespace Hidra.Core.Models
-{   
+{
     public class CallbackMultiplexer
     {
-        private DeviceBinding.ValueChanged _mappingUpdate;
+        private DeviceBinding.ValueChanged? _mappingUpdate;
         private readonly int _index;
         private readonly List<short> _cache;
 
@@ -20,7 +20,7 @@ namespace Hidra.Core.Models
         public void Update(short value)
         {
             _cache[_index] = value;
-            _mappingUpdate(value);
+            _mappingUpdate?.Invoke(value);
         }
 
         ~CallbackMultiplexer()

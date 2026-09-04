@@ -23,7 +23,7 @@ namespace Hidra.Core.Managers
             return Profile.CreateProfile(_context, title, inputDevices, outputDevices);
         }
 
-        public bool AddProfile(Profile newProfile, Profile parentProfile = null)
+        public bool AddProfile(Profile newProfile, Profile? parentProfile = null)
         {
             if (parentProfile != null)
             {
@@ -114,11 +114,11 @@ namespace Hidra.Core.Managers
         /// </summary>
         /// <param name="search">List of profiles to search for nested under each other</param>
         /// <returns>The most specific profile found in the chain, otherwise null</returns>
-        public Profile FindProfile(List<string> search)
+        public Profile? FindProfile(List<string> search)
         {
             Logger.Debug($"Searching for profile: {{{string.Join(",", search)}}}");
-            Profile foundProfile = null;
-            if (search?.Count == 0) return null;
+            Profile? foundProfile = null;
+            if (search.Count == 0) return null;
             var queue = new List<Profile>();
             queue.AddRange(_profiles);
             while (queue.Count > 0)
