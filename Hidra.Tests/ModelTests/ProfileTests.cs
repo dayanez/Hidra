@@ -108,5 +108,81 @@ namespace Hidra.Tests.ModelTests
             Assert.That(newProfile.ParentProfile.Guid, Is.EqualTo(parentProfile.Guid));
             Assert.That(newProfile.Context, Is.Not.Null);
         }
+
+        // Regression test for the Guid-collision bug fixed alongside ProfilesManager.RemapGuids:
+        // a copy used to keep the exact same Profile/DeviceConfiguration Guids as the original
+        // throughout the whole copied subtree, which broke Profile.IsActive() (matches by Guid)
+        // for nested child profiles, and left device bindings pointing at the original's device
+        // configurations instead of the copy's own.
+        [Test]
+        public void CopyProfile_RemapsNestedChildProfileGuid()
+        {
+            var profileManager = new ProfilesManager(_context, _context.Profiles);
+            var profile = _context.Profiles[0];
+            var originalChildProfile = _context.ProfilesManager.CreateProfile("Child", null, null);
+            profile.AddChildProfile(originalChildProfile);
+            var originalChildGuid = originalChildProfile.Guid;
+
+            profileManager.CopyProfile(profile, "Copy");
+            var newProfile = _context.Profiles[1];
+
+            Assert.That(newProfile.ChildProfiles[0].Guid, Is.Not.EqualTo(originalChildGuid));
+            Assert.That(newProfile.ChildProfiles[0].Guid, Is.Not.EqualTo(Guid.Empty));
+        }
+
+        [Test]
+        public void CopyProfile_RewritesDeviceBindingsToTheCopiedDeviceConfigurations()
+        {
+            var profileManager = new ProfilesManager(_context, _context.Profiles);
+            var profile = _context.Profiles[0];
+
+            var inputConfiguration = new DeviceConfiguration(DeviceFactory.CreateDevice("Keyboard", "Core_RawInputHook", "0", 0));
+            profile.AddDeviceConfigurations(new List<DeviceConfiguration> { inputConfiguration }, DeviceIoType.Input);
+
+            var outputConfiguration = new DeviceConfiguration(DeviceFactory.CreateDevice("Keyboard", "Core_RawInputHook", "0", 0));
+            profile.AddDeviceConfigurations(new List<DeviceConfiguration> { outputConfiguration }, DeviceIoType.Output);
+
+            profile.AddPlugin(_mapping, new ButtonToButton());
+            _mapping.DeviceBindings[0].SetDeviceConfigurationGuid(inputConfiguration.Guid);
+            _mapping.Plugins[0].Outputs[0].SetDeviceConfigurationGuid(outputConfiguration.Guid);
+
+            profileManager.CopyProfile(profile, "Copy");
+            var newProfile = _context.Profiles[1];
+            var newInputConfiguration = newProfile.InputDeviceConfigurations[0];
+            var newOutputConfiguration = newProfile.OutputDeviceConfigurations[0];
+
+            // The copy's own device configurations get new Guids...
+            Assert.That(newInputConfiguration.Guid, Is.Not.EqualTo(inputConfiguration.Guid));
+            Assert.That(newOutputConfiguration.Guid, Is.Not.EqualTo(outputConfiguration.Guid));
+
+            // ...and every binding that referenced the original Guid follows along to the new one,
+            // on both the input side (Mapping.DeviceBindings) and the output side (Plugin.Outputs).
+            Assert.That(newProfile.Mappings[0].DeviceBindings[0].DeviceConfigurationGuid, Is.EqualTo(newInputConfiguration.Guid));
+            Assert.That(newProfile.Mappings[0].Plugins[0].Outputs[0].DeviceConfigurationGuid, Is.EqualTo(newOutputConfiguration.Guid));
+        }
+
+        [Test]
+        public void CopyChildProfile_LeavesBindingsToAnAncestorDeviceConfigurationUnchanged()
+        {
+            var parentProfile = _context.Profiles[0];
+
+            var inputConfiguration = new DeviceConfiguration(DeviceFactory.CreateDevice("Keyboard", "Core_RawInputHook", "0", 0));
+            parentProfile.AddDeviceConfigurations(new List<DeviceConfiguration> { inputConfiguration }, DeviceIoType.Input);
+
+            var childProfile = _context.ProfilesManager.CreateProfile("Child", null, null);
+            parentProfile.AddChildProfile(childProfile);
+            var childMapping = childProfile.AddMapping("Child mapping");
+            childProfile.AddPlugin(childMapping, new ButtonToButton());
+            // The child profile binds to a device configuration inherited from its parent, which
+            // is outside the subtree CopyProfile duplicates, so it must keep pointing at the
+            // original parent configuration rather than being rewritten.
+            childMapping.DeviceBindings[0].SetDeviceConfigurationGuid(inputConfiguration.Guid);
+
+            var profileManager = new ProfilesManager(_context, _context.Profiles);
+            profileManager.CopyProfile(childProfile, "Copy");
+            var newChildProfile = parentProfile.ChildProfiles[1];
+
+            Assert.That(newChildProfile.Mappings[0].DeviceBindings[0].DeviceConfigurationGuid, Is.EqualTo(inputConfiguration.Guid));
+        }
     }
 }

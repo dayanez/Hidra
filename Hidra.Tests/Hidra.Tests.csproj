@@ -20,4 +20,25 @@
     <ProjectReference Include="..\Hidra.Plugins\Hidra.Plugins.csproj" />
   </ItemGroup>
 
+  <!--
+    PluginsManager discovers built-in plugins via MEF from a Plugins\<AssemblyName>\ folder next
+    to the running assembly (see Hidra.Core\Managers\PluginsManager.cs); Hidra\Hidra.csproj gets
+    that folder from Hidra.Plugins.csproj's own CopyToPluginsFolder target, but that target only
+    copies into Hidra's output. Without an equivalent copy here, any test that serializes a real
+    plugin (Context.DeepXmlClone, used by ProfilesManager.CopyProfile, Plugin.Duplicate, and
+    Mapping.CreateShadowClone) fails with "type X was not expected" from XmlSerializer, since the
+    serializer's known-types list comes from this same MEF discovery.
+  -->
+  <Target Name="CopyPluginsForTests" AfterTargets="Build">
+    <PropertyGroup>
+      <TestPluginsDir>$(TargetDir)Plugins\Hidra.Plugins\</TestPluginsDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <PluginTestFiles Include="$(TargetDir)Hidra.Plugins.dll" />
+      <PluginTestFiles Include="$(TargetDir)Hidra.Plugins.pdb" Condition="Exists('$(TargetDir)Hidra.Plugins.pdb')" />
+    </ItemGroup>
+    <MakeDir Directories="$(TestPluginsDir)" Condition="!Exists('$(TestPluginsDir)')" />
+    <Copy SourceFiles="@(PluginTestFiles)" DestinationFolder="$(TestPluginsDir)" />
+  </Target>
+
 </Project>
