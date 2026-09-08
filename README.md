@@ -25,6 +25,9 @@ mouse, or general HID remappers that need a kernel driver to talk to game contro
 neither. It only does keyboard and mouse, on purpose, and that narrow scope is what lets it run
 without installing anything at the driver level, on hardware from any manufacturer.
 
+## DISCLAIMER
+This Software will be flagged as malware. It is open source and you are free to inspect it as needed. The reason it's going to be flagged as malware is because this type of software could be used to make keyloggers and other offensive tools. I for the sake of safety will not be explaining and or elaborating how to do this. Refer to `SECURITY.md` as needed. 
+
 ## Features
 
 - **Remap keys and mouse input** to other keys, mouse buttons, or mouse movement, with full
