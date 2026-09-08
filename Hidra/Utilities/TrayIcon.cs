@@ -13,6 +13,10 @@ namespace Hidra.Utilities
     /// </summary>
     internal sealed class TrayIcon : IDisposable
     {
+        // ---------------------------------------------------------------------------
+        // Fields & Events
+        // ---------------------------------------------------------------------------
+
         private const string RunRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
         private const string RunValueName = "Hidra";
 
@@ -22,6 +26,10 @@ namespace Hidra.Utilities
 
         public event Action ShowRequested;
         public event Action ExitRequested;
+
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
 
         public TrayIcon()
         {
@@ -56,11 +64,19 @@ namespace Hidra.Utilities
             _notifyIcon.DoubleClick += (_, _) => ShowRequested?.Invoke();
         }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         /// <summary>Shown once, the first time the window is hidden to the tray in a session.</summary>
         public void ShowFirstRunHint()
         {
             _notifyIcon.ShowBalloonTip(3000, "Hidra is still running", "Your mappings stay active in the background. Right-click this icon to reopen or exit.", ToolTipIcon.Info);
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         // Extracted from the running exe's own icon resource rather than a loose .ico file, so
         // there's nothing extra to ship or keep in sync with the app icon.
@@ -96,6 +112,10 @@ namespace Hidra.Utilities
                 key.DeleteValue(RunValueName, throwOnMissingValue: false);
             }
         }
+
+        // ---------------------------------------------------------------------------
+        // IDisposable
+        // ---------------------------------------------------------------------------
 
         public void Dispose()
         {

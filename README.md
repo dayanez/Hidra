@@ -63,11 +63,10 @@ This is an active, in-progress fork, not a finished product yet. Working today:
 - The full remapping engine, plugin system, and WPF UI described above
 
 Out of scope, on purpose, not a gap to be filled: Hidra does not support game controllers,
-gamepads, or joysticks, as input or output. The original project this forked from
-([Universal Control Remapper](https://github.com/Snoothy/UCR)) supported those, along with MIDI,
-eye trackers, and other niche devices; all of that was removed rather than ported, in favor of
-doing one thing (keyboard and mouse) well. It's still in git history if a future fork wants it
-back; see `CHANGELOG.md`.
+gamepads, or joysticks, as input or output. The original project this forked from supported those,
+along with MIDI, eye trackers, and other niche devices; all of that was removed rather than
+ported, in favor of doing one thing (keyboard and mouse) well. It's still in git history if a
+future fork wants it back; see `CHANGELOG.md`.
 
 ## How it's built
 
@@ -85,7 +84,5 @@ conventions. If you're touching anything that captures raw input or emits synthe
 
 ## Attribution and license
 
-Hidra is a fork of [Universal Control Remapper (UCR)](https://github.com/Snoothy/UCR), originally
-created by evilC and Snoothy (HidWizards). Hidra is open source under the [MIT license](LICENSE),
-as is the upstream UCR/IOWrapper code it's built on; see the LICENSE file for the original
+Hidra is open source under the [MIT license](LICENSE); see the LICENSE file for the original
 copyright notice, which this fork retains as required.

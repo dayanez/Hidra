@@ -51,9 +51,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [0.1.0] - 2026-09-03
 
-First tagged Hidra release. Everything below was built during the fork from Universal Control
-Remapper (UCR); see the "Everything below this point is inherited history from upstream UCR"
-divider further down for the version numbers that predate the fork itself.
+First tagged Hidra release. Everything below was built during the initial fork; see the
+"Everything below this point is inherited history from the upstream project" divider further
+down for the version numbers that predate the fork itself.
 
 ### Added
 
@@ -74,7 +74,7 @@ divider further down for the version numbers that predate the fork itself.
 
 ### Changed
 
-- Forked from Universal Control Remapper (UCR) and rebranded as Hidra
+- Forked from the upstream project and rebranded as Hidra
 - Ported the core app, plugin system, and the Interception/ViGEm providers to .NET 8
 - Vendored the IOWrapper driver layer directly into this repo as `Hidra.IOWrapper`
 - Added `Core_RawInputHook`, a driver-free keyboard/mouse input provider (user-space hook plus
@@ -85,7 +85,7 @@ divider further down for the version numbers that predate the fork itself.
 
 - The Interception input provider and its vendored wrapper DLL, now that `Core_RawInputHook`
   covers keyboard and mouse capture without a kernel driver
-- The niche device providers inherited from UCR that were never ported to .NET 8 and were not
+- The niche device providers inherited from the upstream project that were never ported to .NET 8 and were not
   part of the buildable solution (MIDI, Tobii eye tracker, TitanOne, DS4Windows, SpaceMouse,
   vJoy, SharpDX-based DirectInput/XInput), along with the shared libraries and the standalone
   `IOWrapper.sln`/`TestApp` that only those providers used. They remain available in git history
@@ -125,7 +125,7 @@ divider further down for the version numbers that predate the fork itself.
 - `CircularDeadZoneHelper.Percentage` wasn't clamped to 0-100 like its two sibling helpers,
   letting a negative percentage produce `NaN` output for an actually-centered stick.
 
-Everything below this point is inherited history from the upstream UCR project, prior to the
+Everything below this point is inherited history from the upstream project, prior to the
 Hidra fork.
 
 ## [0.9.0] - 2020-01-02
@@ -189,7 +189,7 @@ Hidra fork.
 - Replaced menu with toolbar in main window
 - Replaced dialog windows with proper dialogs
 - Replaced menu with toolbar in profile window
-- UCR Unblocker now uses the current directory as default
+- Unblocker now uses the current directory as default
 - Sensitivity to Axis Merger plugin added
 - Improved circular deadzone calculation
 
@@ -198,7 +198,7 @@ Hidra fork.
 
 ### Fixed
 - Sum Mode in Axis Merger plugin no longer overflows
-- Unblocking no longer crashes if the UCR path has spaces
+- Unblocking no longer crashes if the app path has spaces
 - Bind Mode button now only responds to mouse down and not mouse up (Fixes binding Space bar re-triggering Bind Mode on release)
 
 ## [0.7.0] - 2019-01-03
@@ -208,7 +208,7 @@ Hidra fork.
 - `Button to Axis` parameters changed to two axis values and option for initialization
 - Plugin updates are now of type short instead of long. Some operations are performed using int, to avoid wrap-around or crashes.
 - Subscription and Bind Mode callbacks are now executed as Tasks and are an Action<short> rather than dynamic
-- Default blocking to true while UCR GUI does not support selecting block
+- Default blocking to true while the GUI does not support selecting block
 
 ## [0.6.0] - 2018-12-03
 
@@ -256,7 +256,7 @@ Hidra fork.
 - nuke versioning task
 
 ### Removed
-- AxisToAxisCumulative, AxisToDelta, ButtonToButtonsLongPress and DeltaToAxis plugins were removed from the UCR repo and moved to the UCR-Plugins repo
+- AxisToAxisCumulative, AxisToDelta, ButtonToButtonsLongPress and DeltaToAxis plugins were removed from the main repo and moved to a separate plugins repo
 - Cake build script
 
 ## [0.4.0] - 2018-09-03

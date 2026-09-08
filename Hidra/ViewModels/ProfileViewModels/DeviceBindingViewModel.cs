@@ -14,6 +14,10 @@ namespace Hidra.ViewModels.ProfileViewModels
 {
     public class DeviceBindingViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         public string DeviceBindingName { get; set; }
         public string IoTypeName => DeviceBinding.DeviceIoType.Equals(DeviceIoType.Input) ? "Input" : "Output";
         public DeviceBindingCategory DeviceBindingCategory { get; set; }
@@ -28,6 +32,10 @@ namespace Hidra.ViewModels.ProfileViewModels
         public bool ShowButtonPreview => DeviceBinding.IsInBindMode || DeviceBinding.Profile.IsActive();
 
         private bool GuiInvalidated { get; set; }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private long GetPreviewValue()
         {
@@ -119,6 +127,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             }
         }
 
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
+
         public DeviceBindingViewModel(DeviceBinding deviceBinding)
         {
             DeviceBinding = deviceBinding;
@@ -129,6 +141,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             LoadDeviceInputs();
         }
         
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public void LoadDeviceInputs()
         {
             var deviceConfigurationList = DeviceBinding.Profile.GetDeviceConfigurationList(DeviceBinding.DeviceIoType);
@@ -169,6 +185,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             OnPropertyChanged(nameof(CurrentValue));
             OnPropertyChanged(nameof(PreviewValue));
         }
+
+        // ---------------------------------------------------------------------------
+        // Event Handlers
+        // ---------------------------------------------------------------------------
 
         private void DeviceBindingOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
@@ -214,6 +234,10 @@ namespace Hidra.ViewModels.ProfileViewModels
                 BindingEnabled = !DeviceBinding.Profile.Context.SubscriptionsManager.ProfileActive;
             }
         }
+
+        // ---------------------------------------------------------------------------
+        // Events
+        // ---------------------------------------------------------------------------
 
         public event PropertyChangedEventHandler PropertyChanged;
 

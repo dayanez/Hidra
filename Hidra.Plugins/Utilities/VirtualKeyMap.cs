@@ -11,9 +11,17 @@ namespace Hidra.Plugins.Utilities
     /// </summary>
     internal static class VirtualKeyMap
     {
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private static readonly Dictionary<string, int> NameToVk = BuildMap();
         private static readonly Dictionary<int, string> VkToName =
             NameToVk.GroupBy(kv => kv.Value).ToDictionary(g => g.Key, g => g.First().Key);
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         /// <summary>Resolves a key name to a virtual-key code. Returns null if unknown.</summary>
         public static int? Resolve(string name)
@@ -35,6 +43,10 @@ namespace Hidra.Plugins.Utilities
 
         /// <summary>Best-effort friendly name for a VK code, used for logging.</summary>
         public static string NameOf(int vkCode) => VkToName.TryGetValue(vkCode, out var name) ? name : $"VK_0x{vkCode:X2}";
+
+        // ---------------------------------------------------------------------------
+        // Key Table Construction
+        // ---------------------------------------------------------------------------
 
         private static Dictionary<string, int> BuildMap()
         {

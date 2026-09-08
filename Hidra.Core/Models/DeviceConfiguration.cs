@@ -19,6 +19,10 @@ namespace Hidra.Core.Models
         [XmlIgnore]
         public int DeviceCount => 1 + ShadowDevices.Count;
 
+        // ---------------------------------------------------------------------------
+        // Constructors
+        // ---------------------------------------------------------------------------
+
         public DeviceConfiguration()
         {
             Guid = Guid.NewGuid();
@@ -29,6 +33,10 @@ namespace Hidra.Core.Models
             Device = device;
             ConfigurationName = null;
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         public void ChangeConfigurationName(string name)
         {

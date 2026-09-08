@@ -8,14 +8,25 @@ namespace Hidra.Views.Controls
 {
     public partial class WindowBar : UserControl
     {
+        // ---------------------------------------------------------------------------
+        // Fields & Properties
+        // ---------------------------------------------------------------------------
+
         private Window Window => Window.GetWindow(this);
         private bool RestoreForDragMove { get; set; }
 
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
 
         public WindowBar()
         {
             InitializeComponent();
         }
+
+        // ---------------------------------------------------------------------------
+        // Event Handlers
+        // ---------------------------------------------------------------------------
 
         private void Close_OnClick(object sender, RoutedEventArgs e)
         {
@@ -47,6 +58,10 @@ namespace Hidra.Views.Controls
         {
             ResizeWindow();
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void ResizeWindow()
         {

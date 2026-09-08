@@ -24,7 +24,15 @@ namespace Hidra.Plugins.Utilities
     /// </summary>
     internal static class ActionExecutor
     {
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private static readonly int InputSize = Marshal.SizeOf<SendInputNative.INPUT>();
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         /// <summary>
         /// Queues the action onto the thread pool so the caller (a plugin's Update, running on
@@ -36,6 +44,10 @@ namespace Hidra.Plugins.Utilities
         {
             ThreadPool.QueueUserWorkItem(_ => Execute(type, value, arguments));
         }
+
+        // ---------------------------------------------------------------------------
+        // Dispatch
+        // ---------------------------------------------------------------------------
 
         private static void Execute(ActionType type, string value, string arguments)
         {
@@ -71,6 +83,10 @@ namespace Hidra.Plugins.Utilities
                 Logger.Error($"ButtonToAction: action '{type}:{value}' failed", ex);
             }
         }
+
+        // ---------------------------------------------------------------------------
+        // Action Implementations
+        // ---------------------------------------------------------------------------
 
         private static void RunProcess(string path, string arguments)
         {
@@ -180,6 +196,10 @@ namespace Hidra.Plugins.Utilities
             var inputs = new[] { BuildKeyInput(vk, keyUp: false), BuildKeyInput(vk, keyUp: true) };
             SendInputNative.SendInput((uint)inputs.Length, inputs, InputSize);
         }
+
+        // ---------------------------------------------------------------------------
+        // Input Helpers
+        // ---------------------------------------------------------------------------
 
         private static SendInputNative.INPUT BuildKeyInput(int vk, bool keyUp)
         {

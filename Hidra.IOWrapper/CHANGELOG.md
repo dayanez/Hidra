@@ -52,7 +52,7 @@ This is controlled by whether BlockingEnabled in the settings file is true or no
 
 ## 0.10.6 - 2019-08-10
 ### Fixed
-- Fix for IOWrapper Issue #33 / UCR issue #98  
+- Fix for IOWrapper Issue #33 / upstream issue #98  
 DirectInput should no longer freeze when PollThreads are started or stopped
 
 ## 0.10.5 - 2019-06-24
@@ -97,7 +97,7 @@ When multiple mouse buttons changed state in one update of the mouse, only one e
 ## 0.10.0 - 2019-01-03
 ### Changed 
 - Subscription and Bind Mode callbacks are now executed as Tasks and are an Action<short> rather than dynamic
-- Default blocking to true while UCR GUI does  not support selecting block
+- Default blocking to true while the GUI does  not support selecting block
 
 ## 0.9.12 - 2018-12-06
 ### Added
@@ -125,7 +125,7 @@ Difference between v0.9.9 and v0.9.6 is solely the "Fix Interception Bind Mode r
 
 ## [0.9.8] - 2018-11-29
 ### Removed
-- Tasks implementation from v0.9.7 removed due to conflicts with UCR. Subscription Mode callbacks are still fired on their own thread
+- Tasks implementation from v0.9.7 removed due to conflicts with the front end. Subscription Mode callbacks are still fired on their own thread
 
 ## [0.9.7] - 2018-11-29
 ### Changed 
@@ -164,7 +164,7 @@ Difference between v0.9.9 and v0.9.6 is solely the "Fix Interception Bind Mode r
 ## [0.8.7] - 2018-11-04
 ### Added
 
-- MIDI Provider "Unsigned" values now report as Positive only Signed. UCR currently does not support eg AxisToButton for unsigned, and resolution is only 7-bit, so we lose nothing and gain compatibility
+- MIDI Provider "Unsigned" values now report as Positive only Signed. The front end currently does not support eg AxisToButton for unsigned, and resolution is only 7-bit, so we lose nothing and gain compatibility
 
 ## [0.8.6] - 2018-10-29
 ### Added

@@ -15,6 +15,10 @@ namespace Hidra.Plugins.Remapper
 	[PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
     public class AxisMerger : Plugin
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         [PluginGui("Dead zone", Order = 3)]
         public int DeadZone { get; set; }
 
@@ -33,6 +37,10 @@ namespace Hidra.Plugins.Remapper
         [PluginGui("Percentage", Order = 0, Group = "Sensitivity")]
         public int Sensitivity { get; set; }
 
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
@@ -43,11 +51,19 @@ namespace Hidra.Plugins.Remapper
             Sum
         }
 
+        // ---------------------------------------------------------------------------
+        // Construction
+        // ---------------------------------------------------------------------------
+
         public AxisMerger()
         {
             DeadZone = 0;
             Sensitivity = 100;
         }
+
+        // ---------------------------------------------------------------------------
+        // Plugin Lifecycle
+        // ---------------------------------------------------------------------------
 
         public override void InitializeCacheValues()
         {
@@ -88,13 +104,17 @@ namespace Hidra.Plugins.Remapper
 
             WriteOutput(0, valueOutput);
         }
-        
+
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
             _sensitivityHelper.IsLinear = Linear;
         }
+
+        // ---------------------------------------------------------------------------
+        // Validation
+        // ---------------------------------------------------------------------------
 
         public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
         {

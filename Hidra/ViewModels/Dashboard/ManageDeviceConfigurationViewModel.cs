@@ -12,6 +12,10 @@ namespace Hidra.ViewModels.Dashboard
 {
     public class ManageDeviceConfigurationViewModel
     {
+        // ---------------------------------------------------------------------------
+        // Properties & Fields
+        // ---------------------------------------------------------------------------
+
         public string Title => "Device configuration";
 
         public string Hint => _deviceConfiguration.Device.Title;
@@ -26,6 +30,10 @@ namespace Hidra.ViewModels.Dashboard
         private readonly DeviceConfiguration _deviceConfiguration;
         private readonly DeviceIoType _deviceIoType;
         private readonly bool _changed;
+
+        // ---------------------------------------------------------------------------
+        // Constructors
+        // ---------------------------------------------------------------------------
 
         public ManageDeviceConfigurationViewModel()
         {
@@ -42,10 +50,18 @@ namespace Hidra.ViewModels.Dashboard
             _changed = true;
         }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public List<Device> GetSelectedShadowDevices()
         {
             return ShadowDevices.ShadowDevices.Select(d => d.Device).ToList();
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private List<DeviceViewModel> GetAllShadowDevices()
         {

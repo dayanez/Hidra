@@ -1,10 +1,10 @@
 # IOWrapper
-**Unless you are a developer, this project is probably of no use to you. End Users should download [UCR](https://github.com/Snoothy/UCR) instead**
+**Unless you are a developer, this project is probably of no use to you. End Users should download Hidra instead**
 
 ## Project Overview
 
-IOWrapper is the "Back End" for [Universal Control Remapper (UCR) 2](https://github.com/Snoothy/UCR) , handling all the device interaction.  
-Technically, however, IOWrapper is a stand-alone project which is not inherently coupled to the UCR front-end.  
+IOWrapper is the "Back End" for Hidra, handling all the device interaction.  
+Technically, however, IOWrapper is a stand-alone project which is not inherently coupled to any particular front-end.  
 
 The purpose of the IOWrapper library is to present a list of devices to the consumer; both input (The user typed a key, moved a joystick etc) and output (Faking user input). The consumer can make "subscriptions" to devices in order to receive input or send output.
 
@@ -24,7 +24,7 @@ A "Provider Libraries" project is provided, with helper classes etc to simplify 
 
 ### Normalization
 
-UCR (The front end which sits on top of IOWrapper) is *API Agnostic* - that is to say that it does not care how a device is identified, or in what format data from the device comes in, everything is normalized to a consistent way of reporting.
+The front end which sits on top of IOWrapper is *API Agnostic* - that is to say that it does not care how a device is identified, or in what format data from the device comes in, everything is normalized to a consistent way of reporting.
 
 However, the current system will probably need to be overhauled at some point, as 
 
@@ -43,11 +43,11 @@ SubIndex is optional, and is typically used to denote a derived value (eg an inp
 
 #### Input Values
 
-All input values in IOWrapper are currently normalized to signed 16-bit integers for axes, or 0 (Unpressed) / 1 (Pressed) for buttons. In this way, plugins in the UCR front end are always dealing with a consistent range of values.
+All input values in IOWrapper are currently normalized to signed 16-bit integers for axes, or 0 (Unpressed) / 1 (Pressed) for buttons. In this way, plugins in the front end are always dealing with a consistent range of values.
 
 ### Writing a Provider
 
-So you have some funky new input device, and you want to make it work with UCR?
+So you have some funky new input device, and you want to make it work with the front end?
 Here is a handy sequence of steps you can take to incrementally make progress, even with minimal C# knowledge.
 
 #### Starting Out
@@ -94,7 +94,7 @@ By this point, you should be able to use the Test App to subscribe to your vario
 
 #### Reporting
 
-Now you can subscribe to stuff, but if you integrated it into UCR right now, it would be useless, as the user would have no way of selecting the input to bind to - the Device Group window would not contain anything, and even if it did, the Input selection control would not contain any axes or buttons for that device.
+Now you can subscribe to stuff, but if you integrated it into the front end right now, it would be useless, as the user would have no way of selecting the input to bind to - the Device Group window would not contain anything, and even if it did, the Input selection control would not contain any axes or buttons for that device.
 This is handled via Reports - you need to implement `GetInputList` and `GetInputDeviceReport`. These basically populate the menus in the front end with text, and tell the front end what `BindingDescriptor` to pass to the back end when the user selects that input.
 
 #### Multiple Devices
@@ -109,19 +109,19 @@ If you wish to support multiple identical devices, you need to use the `DeviceIn
 
 #### Tidying Up
 
-In order for the provider to play nice, it **must** properly implement `IDisposable`. When the provider is Disposed, **kill all threads**. If you do not do this, UCR may well hang on exit.
+In order for the provider to play nice, it **must** properly implement `IDisposable`. When the provider is Disposed, **kill all threads**. If you do not do this, the front end may well hang on exit.
 
 Try to consider performance, especially if working with high frequency data (eg mouse movement).
 
-## Procedure for targetting a new IOWrapper version in UCR  
+## Procedure for targetting a new IOWrapper version in the front-end project  
 1. Make an IOWrapper release, tag it with a version number  
-1. Create a new branch in UCR called `feature/iowrapper-<version number>`  
+1. Create a new branch in the front-end project called `feature/iowrapper-<version number>`  
 eg `feature/iowrapper-1.2.3.4`  
-1. Open a powershell prompt to `<UCR folder>\submodules\IOWrapper`
+1. Open a powershell prompt to `<front-end folder>\submodules\IOWrapper`
 1. `git fetch`  
 1. `git checkout -q <hash of new IOWrapper version>`  
 eg `git checkout -q a621ada`  
-1. Commit changes to UCR branch  
+1. Commit changes to the front-end branch  
 1. `cd ..\..`
 1. `.\build.ps1 Clean`  
 1. `.\build.ps1`

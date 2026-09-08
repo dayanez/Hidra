@@ -25,6 +25,10 @@ namespace Hidra.Core.Models.Subscription
             FilterState = new FilterState();
         }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public void AddOutputDeviceConfiguration(DeviceConfiguration deviceConfiguration)
         {
             var deviceSubscription = new DeviceConfigurationSubscription(deviceConfiguration);
@@ -45,6 +49,10 @@ namespace Hidra.Core.Models.Subscription
             MappingSubscriptions.AddRange(profileMappings);
             MappingSubscriptions.AddRange(AddShadowMappings(profile, profileMappings, profileOutputDevices));
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private List<MappingSubscription> AddShadowMappings(Profile profile, List<MappingSubscription> profileMappings, List<DeviceConfigurationSubscription> profileOutputDevices)
         {

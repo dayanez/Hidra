@@ -11,6 +11,9 @@ namespace Hidra.ViewModels.ProfileViewModels
 {
     public class FilterViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
 
         public string Name => Filter.Name;
         public bool Negative => Filter.Negative;
@@ -21,6 +24,10 @@ namespace Hidra.ViewModels.ProfileViewModels
         public double ChipOpacity => GetFilterState() ? 1.0 : 0.26;
         private readonly PluginViewModel _pluginViewModel;
 
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
+
         public FilterViewModel(PluginViewModel pluginViewModel, Filter filter)
         {
             _pluginViewModel = pluginViewModel;
@@ -29,6 +36,10 @@ namespace Hidra.ViewModels.ProfileViewModels
 
             SubscribeFilters();
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void SubscribeFilters()
         {
@@ -73,6 +84,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             OnPropertyChanged(nameof(ChipOpacity));
         }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public void ToggleFilter()
         {
             _pluginViewModel.ToggleFilter(this);
@@ -83,6 +98,10 @@ namespace Hidra.ViewModels.ProfileViewModels
         {
             _pluginViewModel.RemoveFilter(this);
         }
+
+        // ---------------------------------------------------------------------------
+        // Events
+        // ---------------------------------------------------------------------------
 
         public event PropertyChangedEventHandler PropertyChanged;
 

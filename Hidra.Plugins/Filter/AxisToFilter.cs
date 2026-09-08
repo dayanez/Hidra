@@ -10,6 +10,10 @@ namespace Hidra.Plugins.Filter
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToFilter : Plugin
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         [PluginGui("Filter name")]
         public string FilterName { get; set; }
 
@@ -24,8 +28,15 @@ namespace Hidra.Plugins.Filter
         [PluginGui("Filter state exiting range")]
         public FilterMode FilterStateExiting { get; set; }
 
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private short _lastLocation;
 
+        // ---------------------------------------------------------------------------
+        // Construction
+        // ---------------------------------------------------------------------------
 
         public AxisToFilter()
         {
@@ -35,6 +46,10 @@ namespace Hidra.Plugins.Filter
             RangeUpperBound = 50;
             _lastLocation = 0;
         }
+
+        // ---------------------------------------------------------------------------
+        // Plugin Lifecycle
+        // ---------------------------------------------------------------------------
 
         public override void Update(params short[] values)
         {
@@ -46,6 +61,10 @@ namespace Hidra.Plugins.Filter
             if (!newIsInside) ChangeState(FilterStateExiting);
             if (newIsInside) ChangeState(FilterStateEntering);
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private bool IsWithinBounds(short value)
         {
@@ -69,6 +88,10 @@ namespace Hidra.Plugins.Filter
                     break;
             }
         }
+
+        // ---------------------------------------------------------------------------
+        // Validation
+        // ---------------------------------------------------------------------------
 
         public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
         {

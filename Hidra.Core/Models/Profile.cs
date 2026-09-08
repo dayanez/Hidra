@@ -18,8 +18,10 @@ namespace Hidra.Core.Models
         /* Persistence */
         [XmlAttribute]
         public string Title { get; set; } = string.Empty;
+
         [XmlAttribute]
         public Guid Guid { get; set; }
+
         /// <summary>
         /// If set, this profile is automatically activated whenever a process with this
         /// executable file name (e.g. "game.exe") becomes the focused window.
@@ -28,9 +30,10 @@ namespace Hidra.Core.Models
         public List<Profile> ChildProfiles { get; set; } = new List<Profile>();
         public List<Mapping> Mappings { get; set; } = new List<Mapping>();
 
-        public List<DeviceConfiguration> InputDeviceConfigurations { get; set; } = new List<DeviceConfiguration>();
-        public List<DeviceConfiguration> OutputDeviceConfigurations { get; set; } = new List<DeviceConfiguration>();
-
+        public List<DeviceConfiguration> InputDeviceConfigurations { get; set; } =
+            new List<DeviceConfiguration>();
+        public List<DeviceConfiguration> OutputDeviceConfigurations { get; set; } =
+            new List<DeviceConfiguration>();
 
         /* Runtime */
         // Null only in the gap between XmlSerializer using the parameterless constructor below
@@ -38,6 +41,7 @@ namespace Hidra.Core.Models
         // or PostLoad itself) sets it, and nothing reads Context before PostLoad has run.
         [XmlIgnore]
         public Context Context = null!;
+
         [XmlIgnore]
         public Profile? ParentProfile { get; set; }
 
@@ -59,7 +63,8 @@ namespace Hidra.Core.Models
             Guid = Guid.NewGuid();
         }
 
-        public Profile(Context context, Profile? parentProfile = null) : this(context)
+        public Profile(Context context, Profile? parentProfile = null)
+            : this(context)
         {
             ParentProfile = parentProfile;
         }
@@ -68,14 +73,19 @@ namespace Hidra.Core.Models
 
         #region Actions
 
-        public static Profile CreateProfile(Context context, string title, List<DeviceConfiguration>? inputDevices,
-            List<DeviceConfiguration>? outputDevices, Profile? parent = null)
+        public static Profile CreateProfile(
+            Context context,
+            string title,
+            List<DeviceConfiguration>? inputDevices,
+            List<DeviceConfiguration>? outputDevices,
+            Profile? parent = null
+        )
         {
             var profile = new Profile(context, parent)
             {
                 Title = title,
                 InputDeviceConfigurations = inputDevices ?? new List<DeviceConfiguration>(),
-                OutputDeviceConfigurations = outputDevices ?? new List<DeviceConfiguration>()
+                OutputDeviceConfigurations = outputDevices ?? new List<DeviceConfiguration>(),
             };
 
             return profile;
@@ -83,7 +93,8 @@ namespace Hidra.Core.Models
 
         public void AddChildProfile(Profile profile)
         {
-            if (ChildProfiles == null) ChildProfiles = new List<Profile>();
+            if (ChildProfiles == null)
+                ChildProfiles = new List<Profile>();
             profile.Context = Context;
             profile.ParentProfile = this;
             ChildProfiles.Add(profile);
@@ -127,10 +138,7 @@ namespace Hidra.Core.Models
             return Context.SubscriptionsManager.DeactivateCurrentProfile();
         }
 
-        internal void PrepareProfile()
-        {
-
-        }
+        internal void PrepareProfile() { }
 
         #endregion
 
@@ -146,7 +154,8 @@ namespace Hidra.Core.Models
 
         public bool RemoveMapping(Mapping mapping)
         {
-            if (!Mappings.Remove(mapping)) return false;
+            if (!Mappings.Remove(mapping))
+                return false;
             Context.ContextChanged();
             return true;
         }
@@ -155,18 +164,27 @@ namespace Hidra.Core.Models
 
         #region Device
 
-        public DeviceConfiguration? GetDeviceConfiguration(DeviceIoType deviceIoType, Guid deviceConfigurationGuid)
+        public DeviceConfiguration? GetDeviceConfiguration(
+            DeviceIoType deviceIoType,
+            Guid deviceConfigurationGuid
+        )
         {
             var deviceList = GetDeviceConfigurationList(deviceIoType);
-            return deviceList.FirstOrDefault(configuration => configuration.Guid == deviceConfigurationGuid);
+            return deviceList.FirstOrDefault(configuration =>
+                configuration.Guid == deviceConfigurationGuid
+            );
         }
 
         public List<DeviceConfiguration> GetDeviceConfigurationList(DeviceIoType deviceIoType)
         {
             var result = new List<DeviceConfiguration>();
-            if (ParentProfile != null) result.AddRange(ParentProfile.GetDeviceConfigurationList(deviceIoType));
+            if (ParentProfile != null)
+                result.AddRange(ParentProfile.GetDeviceConfigurationList(deviceIoType));
 
-            var devices = deviceIoType == DeviceIoType.Input ? InputDeviceConfigurations : OutputDeviceConfigurations;
+            var devices =
+                deviceIoType == DeviceIoType.Input
+                    ? InputDeviceConfigurations
+                    : OutputDeviceConfigurations;
             devices.ForEach(d => d.Device.Profile = this);
             result.AddRange(devices);
 
@@ -187,19 +205,31 @@ namespace Hidra.Core.Models
             return availableDeviceList;
         }
 
-        public void AddDeviceConfigurations(List<DeviceConfiguration> deviceConfigurations, DeviceIoType deviceIoType)
+        public void AddDeviceConfigurations(
+            List<DeviceConfiguration> deviceConfigurations,
+            DeviceIoType deviceIoType
+        )
         {
             deviceConfigurations.ForEach(configuration => configuration.Device.Profile = this);
-            var deviceList = deviceIoType == DeviceIoType.Input ? InputDeviceConfigurations : OutputDeviceConfigurations;
+            var deviceList =
+                deviceIoType == DeviceIoType.Input
+                    ? InputDeviceConfigurations
+                    : OutputDeviceConfigurations;
 
             deviceList.AddRange(deviceConfigurations);
-            OnPropertyChanged(deviceIoType == DeviceIoType.Input ? nameof(InputDeviceConfigurations) : nameof(OutputDeviceConfigurations));
+            OnPropertyChanged(
+                deviceIoType == DeviceIoType.Input
+                    ? nameof(InputDeviceConfigurations)
+                    : nameof(OutputDeviceConfigurations)
+            );
             Context.ContextChanged();
         }
 
         public bool RemoveDeviceConfiguration(DeviceConfiguration device)
         {
-            var success = InputDeviceConfigurations.Remove(device) || OutputDeviceConfigurations.Remove(device);
+            var success =
+                InputDeviceConfigurations.Remove(device)
+                || OutputDeviceConfigurations.Remove(device);
             if (success)
             {
                 OnPropertyChanged(nameof(InputDeviceConfigurations));
@@ -212,8 +242,8 @@ namespace Hidra.Core.Models
 
         public bool CanRemoveDeviceConfiguration(DeviceConfiguration device)
         {
-            return InputDeviceConfigurations.Contains(device) || OutputDeviceConfigurations.Contains(device);
-
+            return InputDeviceConfigurations.Contains(device)
+                || OutputDeviceConfigurations.Contains(device);
         }
         #endregion
 
@@ -228,14 +258,16 @@ namespace Hidra.Core.Models
 
         public bool AddPlugin(Mapping mapping, Plugin plugin)
         {
-            if (!Mappings.Contains(mapping)) return false;
+            if (!Mappings.Contains(mapping))
+                return false;
             mapping.AddPlugin(plugin);
             return true;
         }
 
         public bool RemovePlugin(Mapping mapping, Plugin plugin)
         {
-            if (!Mappings.Contains(mapping)) return false;
+            if (!Mappings.Contains(mapping))
+                return false;
             mapping.Plugins.Remove(plugin);
             Context.ContextChanged();
             return true;
@@ -245,9 +277,10 @@ namespace Hidra.Core.Models
 
         public HashSet<string> GetFilters()
         {
-            var result = ParentProfile != null
-                ? ParentProfile.GetFilters()
-                : new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+            var result =
+                ParentProfile != null
+                    ? ParentProfile.GetFilters()
+                    : new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
             foreach (var mapping in Mappings)
             {
@@ -267,7 +300,9 @@ namespace Hidra.Core.Models
 
         public string ProfileBreadCrumbs()
         {
-            return ParentProfile != null ? ParentProfile.ProfileBreadCrumbs() + " > " + Title : Title;
+            return ParentProfile != null
+                ? ParentProfile.ProfileBreadCrumbs() + " > " + Title
+                : Title;
         }
 
         /// <summary>

@@ -15,9 +15,17 @@ namespace Hidra.Tests.ModelTests
     internal class SubscriptionTest
     {
 
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private Context _context;
         private Profile _profile;
         private string _profileName;
+
+        // ---------------------------------------------------------------------------
+        // Setup
+        // ---------------------------------------------------------------------------
 
         [SetUp]
         public void Setup()
@@ -28,6 +36,10 @@ namespace Hidra.Tests.ModelTests
             _context.ProfilesManager.AddProfile(profile);
             _profile = _context.Profiles[0];
         }
+
+        // ---------------------------------------------------------------------------
+        // Tests
+        // ---------------------------------------------------------------------------
 
         [Test]
         public void TestEmptyProfile()
@@ -54,6 +66,10 @@ namespace Hidra.Tests.ModelTests
             Assert.AreEqual(1, state.MappingSubscriptions[0].PluginSubscriptions.Count);
             Assert.AreEqual(plugin, state.MappingSubscriptions[0].PluginSubscriptions[0].Plugin);
         }
+
+        // ---------------------------------------------------------------------------
+        // Helpers
+        // ---------------------------------------------------------------------------
 
         private SubscriptionState getSubscriptionState()
         {

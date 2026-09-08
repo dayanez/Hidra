@@ -10,6 +10,10 @@ namespace Hidra.ViewModels.ProfileViewModels
 {
     public class PluginViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         public MappingViewModel MappingViewModel { get; }
         public Plugin Plugin { get; set; }
         public ObservableCollection<DeviceBindingViewModel> DeviceBindings { get; set; }
@@ -17,6 +21,10 @@ namespace Hidra.ViewModels.ProfileViewModels
         public bool CanRemove => !MappingViewModel.ProfileViewModel.Profile.IsActive() && MappingViewModel.Plugins.Count > 1;
         public bool CanAddFilter => !MappingViewModel.ProfileViewModel.Profile.IsActive();
         public ObservableCollection<FilterViewModel> Filters { get; set; }
+
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
 
         public PluginViewModel(MappingViewModel mappingViewModel, Plugin plugin)
         {
@@ -28,6 +36,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             PopulatePluginProperties();
             PopulateFilterViewModels();
         }
+
+        // ---------------------------------------------------------------------------
+        // Event Handlers & Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void PopulateFilterViewModels()
         {
@@ -48,6 +60,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             OnPropertyChanged(nameof(CanRemove));
             OnPropertyChanged(nameof(CanAddFilter));
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         public void Remove()
         {
@@ -85,6 +101,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             }
         }
 
+        // ---------------------------------------------------------------------------
+        // Events
+        // ---------------------------------------------------------------------------
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -92,6 +112,10 @@ namespace Hidra.ViewModels.ProfileViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        // ---------------------------------------------------------------------------
+        // Filter Commands
+        // ---------------------------------------------------------------------------
 
         public async void AddFilter()
         {

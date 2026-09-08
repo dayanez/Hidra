@@ -18,6 +18,10 @@ namespace Hidra.Core.Managers
             _profiles = profiles;
         }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public Profile CreateProfile(string title, List<DeviceConfiguration> inputDevices, List<DeviceConfiguration> outputDevices)
         {
             return Profile.CreateProfile(_context, title, inputDevices, outputDevices);
@@ -69,6 +73,10 @@ namespace Hidra.Core.Managers
         // rewritten to match; a binding that instead points at a configuration on an ancestor
         // profile (outside the copied subtree) is left alone, since that configuration was never
         // duplicated.
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
+
         private static void RemapGuids(Profile profile)
         {
             var configurationGuidMap = new Dictionary<Guid, Guid>();
@@ -107,6 +115,10 @@ namespace Hidra.Core.Managers
 
             profile.ChildProfiles.ForEach(childProfile => RemapDeviceBindingGuids(childProfile, configurationGuidMap));
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         /// <summary>
         /// Breadth-first search for nested profiles

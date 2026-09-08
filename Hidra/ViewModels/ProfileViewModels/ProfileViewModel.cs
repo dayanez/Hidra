@@ -10,12 +10,20 @@ namespace Hidra.ViewModels.ProfileViewModels
 {
     public class ProfileViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         public Profile Profile { get; }
         public bool CanActivateProfile => Profile.Context.ActiveProfile != Profile;
         public bool CanDeactivateProfile => Profile.Context.ActiveProfile != null;
         public ObservableCollection<MappingViewModel> MappingsList { get; set; }
         public PluginToolboxViewModel PluginToolbox { get; set; }
         public string ProfileDialogIdentifier => $"ProfileDialog-{Profile.Guid}";
+
+        // ---------------------------------------------------------------------------
+        // Constructors
+        // ---------------------------------------------------------------------------
 
         public ProfileViewModel()
         {
@@ -32,11 +40,19 @@ namespace Hidra.ViewModels.ProfileViewModels
             PluginToolbox = new PluginToolboxViewModel(profile, pluginList);
         }
 
+        // ---------------------------------------------------------------------------
+        // Event Handlers
+        // ---------------------------------------------------------------------------
+
         private void ContextOnActiveProfileChangedEvent(Profile profile)
         {
             OnPropertyChanged(nameof(CanActivateProfile));
             OnPropertyChanged(nameof(CanDeactivateProfile));
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void PopulateMappingsList(Profile profile)
         {
@@ -46,6 +62,10 @@ namespace Hidra.ViewModels.ProfileViewModels
                 AddMapping(profileMapping);
             }
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         public MappingViewModel AddMapping(string title)
         {
@@ -70,6 +90,10 @@ namespace Hidra.ViewModels.ProfileViewModels
 
             if (Profile.RemoveMapping(mappingViewModel.Mapping)) MappingsList.Remove(mappingViewModel);
         }
+
+        // ---------------------------------------------------------------------------
+        // Events
+        // ---------------------------------------------------------------------------
 
         public event PropertyChangedEventHandler PropertyChanged;
 

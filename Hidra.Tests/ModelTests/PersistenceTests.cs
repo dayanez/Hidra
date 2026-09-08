@@ -13,7 +13,15 @@ namespace Hidra.Tests.ModelTests
     [TestFixture]
     internal class PersistenceTests
     {
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private readonly int _saveReloadTimes = 3;
+
+        // ---------------------------------------------------------------------------
+        // Tests
+        // ---------------------------------------------------------------------------
 
         [Test]
         public void BlankContext()
@@ -112,6 +120,10 @@ namespace Hidra.Tests.ModelTests
                 newcontext.SaveContext(pluginTypes);
             }
         }
+
+        // ---------------------------------------------------------------------------
+        // Helpers
+        // ---------------------------------------------------------------------------
 
         private static void SetDeviceBindingValues(DeviceBinding deviceBinding, int value)
         {

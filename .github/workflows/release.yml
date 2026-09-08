@@ -53,7 +53,8 @@ jobs:
           $publishDir = "Hidra/bin/Release/net8.0-windows/win-x64/publish"
           Copy-Item -Recurse "Hidra/bin/Release/net8.0-windows/Plugins" "$publishDir/Plugins"
           Copy-Item -Recurse "Hidra/bin/Release/net8.0-windows/Providers" "$publishDir/Providers"
-          # Tag is "hidra-v0.1.0" (disambiguated from UCR's own pre-fork v0.1.0-v0.9.0 tags);
+          # Tag is "hidra-v0.1.0" (disambiguated from the upstream project's own pre-fork
+          # v0.1.0-v0.9.0 tags);
           # strip the "hidra-" prefix for a plain "Hidra-v0.1.0-win-x64.zip" asset name.
           $version = "${{ github.ref_name }}" -replace '^hidra-', ''
           Compress-Archive -Path "$publishDir/*" -DestinationPath "Hidra-$version-win-x64.zip"

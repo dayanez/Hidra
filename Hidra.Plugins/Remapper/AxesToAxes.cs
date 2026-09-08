@@ -17,10 +17,18 @@ namespace Hidra.Plugins.Remapper
     [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxesToAxes : Plugin
     {
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private readonly CircularDeadZoneHelper _circularDeadZoneHelper = new CircularDeadZoneHelper();
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
         private double _linearSensitivityScaleFactor;
+
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
 
         [PluginGui("Invert X", Group = "X axis")]
         public bool InvertX { get; set; }
@@ -40,12 +48,19 @@ namespace Hidra.Plugins.Remapper
         [PluginGui("Circular", Order = 1, Group = "Dead zone")]
         public bool CircularDz { get; set; }
 
+        // ---------------------------------------------------------------------------
+        // Construction
+        // ---------------------------------------------------------------------------
 
         public AxesToAxes()
         {
             DeadZone = 0;
             Sensitivity = 100;
         }
+
+        // ---------------------------------------------------------------------------
+        // Plugin Lifecycle
+        // ---------------------------------------------------------------------------
 
         public override void InitializeCacheValues()
         {
@@ -99,6 +114,10 @@ namespace Hidra.Plugins.Remapper
             WriteOutput(0, outputValues[0]);
             WriteOutput(1, outputValues[1]);
         }
+
+        // ---------------------------------------------------------------------------
+        // Validation
+        // ---------------------------------------------------------------------------
 
         public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
         {

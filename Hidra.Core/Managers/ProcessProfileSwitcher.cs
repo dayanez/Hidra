@@ -30,6 +30,10 @@ namespace Hidra.Core.Managers
             _timer.Start();
         }
 
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
+
         private void Poll()
         {
             if (!Enabled) return;
@@ -88,6 +92,10 @@ namespace Hidra.Core.Managers
         {
             _timer.Stop();
         }
+
+        // ---------------------------------------------------------------------------
+        // Native Interop
+        // ---------------------------------------------------------------------------
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();

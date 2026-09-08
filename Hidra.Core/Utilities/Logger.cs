@@ -8,6 +8,10 @@ namespace Hidra.Core.Utilities
 
         private enum LogLevel { Trace, Debug, Info, Warn, Error, Fatal }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public static void Trace(string message, Exception? e = null)
         {
             Log(LogLevel.Trace, message, e);
@@ -37,6 +41,10 @@ namespace Hidra.Core.Utilities
         {
             Log(LogLevel.Fatal, message, e);
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private static void Log(LogLevel logLevel, string message, Exception? e)
         {

@@ -101,6 +101,10 @@ namespace Hidra.Core.Models.Binding
             }
         }
 
+        // ---------------------------------------------------------------------------
+        // Constructors
+        // ---------------------------------------------------------------------------
+
         public DeviceBinding()
         {
             Guid = Guid.NewGuid();
@@ -114,6 +118,10 @@ namespace Hidra.Core.Models.Binding
             Guid = Guid.NewGuid();
             IsBound = false;
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         public void SetDeviceConfigurationGuid(Guid deviceConfigurationGuid)
         {
@@ -211,6 +219,10 @@ namespace Hidra.Core.Models.Binding
             Profile!.Context.ContextChanged();
         }
 
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
+
         private void OnEndBindModeHandler(DeviceBinding deviceBinding)
         {
             if (deviceBinding.Guid != Guid) return;
@@ -223,6 +235,10 @@ namespace Hidra.Core.Models.Binding
             CurrentValue = value;
             _callback!(value);
         }
+
+        // ---------------------------------------------------------------------------
+        // INotifyPropertyChanged
+        // ---------------------------------------------------------------------------
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

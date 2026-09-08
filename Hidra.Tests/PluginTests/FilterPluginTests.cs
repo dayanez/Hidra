@@ -14,11 +14,19 @@ namespace Hidra.Tests.PluginTests
     [TestFixture]
     internal class FilterPluginTests
     {
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private Context _context;
         private Profile _profile;
         private Mapping _mapping;
         private FilterState _filterState;
         private const string FilterName = "test-filter";
+
+        // ---------------------------------------------------------------------------
+        // Setup
+        // ---------------------------------------------------------------------------
 
         [SetUp]
         public void Setup()
@@ -35,12 +43,20 @@ namespace Hidra.Tests.PluginTests
             _filterState.FilterRuntimeDictionary[FilterName] = false;
         }
 
+        // ---------------------------------------------------------------------------
+        // Helpers
+        // ---------------------------------------------------------------------------
+
         private T AddPlugin<T>(T plugin) where T : Plugin
         {
             _profile.AddPlugin(_mapping, plugin);
             _mapping.PrepareMapping(_filterState);
             return plugin;
         }
+
+        // ---------------------------------------------------------------------------
+        // Tests
+        // ---------------------------------------------------------------------------
 
         [Test]
         public void ButtonToFilter_SetsActiveOnPressAndInactiveOnRelease()

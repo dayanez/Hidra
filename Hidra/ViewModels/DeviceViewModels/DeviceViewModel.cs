@@ -13,6 +13,9 @@ namespace Hidra.ViewModels.DeviceViewModels
 {
     public class DeviceViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
 
         public string Title { get; set; }
         public string ProviderName { get; set; }
@@ -34,6 +37,10 @@ namespace Hidra.ViewModels.DeviceViewModels
 
         public Device Device { get; }
 
+        // ---------------------------------------------------------------------------
+        // Constructors
+        // ---------------------------------------------------------------------------
+
         public DeviceViewModel()
         {
         }
@@ -50,11 +57,19 @@ namespace Hidra.ViewModels.DeviceViewModels
             Checked = selected;
         }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public void ToggleSelection()
         {
             Checked = !Checked;
             OnPropertyChanged(nameof(Checked));
         }
+
+        // ---------------------------------------------------------------------------
+        // Events
+        // ---------------------------------------------------------------------------
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -15,6 +15,10 @@ namespace Hidra.ViewModels.Dashboard
 {
     public class ProfileDeviceListControlViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Properties & Fields
+        // ---------------------------------------------------------------------------
+
         public ObservableCollection<DeviceItem> Devices { get; set; }
         public bool IsRemoveEnabled => CanRemoveDevice();
         public bool IsConfigurationEnabled => CanManageDeviceConfiguration();
@@ -34,6 +38,10 @@ namespace Hidra.ViewModels.Dashboard
         private readonly Profile _profile;
         private readonly DeviceIoType _deviceIoType;
 
+        // ---------------------------------------------------------------------------
+        // Constructors
+        // ---------------------------------------------------------------------------
+
         public ProfileDeviceListControlViewModel()
         {
         }
@@ -49,11 +57,19 @@ namespace Hidra.ViewModels.Dashboard
             }
         }
 
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
+
         private bool CanRemoveDevice()
         {
             if (SelectedDeviceConfiguration == null) return false;
             return _profile.CanRemoveDeviceConfiguration(SelectedDeviceConfiguration.DeviceConfiguration);
         }
+
+        // ---------------------------------------------------------------------------
+        // Events
+        // ---------------------------------------------------------------------------
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -62,6 +78,10 @@ namespace Hidra.ViewModels.Dashboard
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         public async void RemoveDevice(DeviceItem deviceItem)
         {

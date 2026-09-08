@@ -5,8 +5,12 @@ namespace Hidra.Utilities
 {
     internal static class NativeMethods
     {
+        // ---------------------------------------------------------------------------
+        // Window Lookup & Messaging
+        // ---------------------------------------------------------------------------
+
         /// <summary>
-        /// Retrieves a handle to the top-level window whose class name and window name match 
+        /// Retrieves a handle to the top-level window whose class name and window name match
         /// the specified strings.
         /// This function does not search child windows.
         /// This function does not perform a case-sensitive search.
@@ -65,6 +69,10 @@ namespace Hidra.Utilities
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+
+        // ---------------------------------------------------------------------------
+        // UIPI Message Filtering
+        // ---------------------------------------------------------------------------
 
         /// <summary>
         /// Values used in the struct CHANGEFILTERSTRUCT

@@ -13,6 +13,10 @@ namespace Hidra.ViewModels.Dashboard
 {
     public class DashboardViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Events & Properties
+        // ---------------------------------------------------------------------------
+
         public event PropertyChangedEventHandler PropertyChanged;
         public string Title => "Hidra";
         public Visibility ProfileDetailsActive => SelectedProfileItem != null ? Visibility.Visible : Visibility.Hidden;
@@ -39,6 +43,10 @@ namespace Hidra.ViewModels.Dashboard
 
         private Context Context { get; set; }
 
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
+
         public DashboardViewModel(Context context)
         {
             Context = context;
@@ -46,6 +54,10 @@ namespace Hidra.ViewModels.Dashboard
             PropertyChanged += OnPropertyChanged;
             context.ActiveProfileChangedEvent += OnActiveProfileChangedEvent;
         }
+
+        // ---------------------------------------------------------------------------
+        // Event Handlers & Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -75,6 +87,10 @@ namespace Hidra.ViewModels.Dashboard
             OnPropertyChanged(nameof(CanDeactivateProfile));
         }
         
+        // ---------------------------------------------------------------------------
+        // INotifyPropertyChanged plumbing
+        // ---------------------------------------------------------------------------
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

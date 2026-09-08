@@ -63,12 +63,12 @@ the other three real projects).
   anything in `Hidra/Views`.
 - `Hidra.IOWrapper/`: vendored fork of the IOWrapper device abstraction
   layer, under `Source/Core Providers/` (only `Core_RawInputHook`, covering
-  both keyboard/mouse input and output; every other provider UCR shipped,
-  including the ViGEm virtual controller provider, has been removed as
+  both keyboard/mouse input and output; every other provider the original
+  project shipped, including the ViGEm virtual controller provider, has been removed as
   out of scope, see `CHANGELOG.md`). This is third-party-derived code kept
-  in-repo; see its own `README.md`/`CHANGELOG.md` for the parts of its
-  documentation that describe pre-fork history and are intentionally left
-  as-is.
+  in-repo; its own `README.md`/`CHANGELOG.md` still describe pre-fork
+  history, so treat their content as historical record rather than
+  Hidra's own documentation.
 - `Hidra.Tests/`: NUnit tests for `Hidra.Core`/`Hidra.Plugins` (see `### Tests` above).
 
 ## Security-Sensitive Areas

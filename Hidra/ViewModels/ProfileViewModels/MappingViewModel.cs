@@ -11,12 +11,20 @@ namespace Hidra.ViewModels.ProfileViewModels
 {
     public class MappingViewModel : INotifyPropertyChanged
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         public string MappingTitle => Mapping.FullTitle;
         public ProfileViewModel ProfileViewModel { get; }
         public Mapping Mapping { get; set; }
         public ObservableCollection<PluginViewModel> Plugins { get; set; }
         public ObservableCollection<DeviceBindingViewModel> DeviceBindings { get; set; }
         public bool ButtonsEnabled => !ProfileViewModel.Profile.IsActive();
+
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
 
         public MappingViewModel(ProfileViewModel profileViewModel, Mapping mapping)
         {
@@ -28,10 +36,18 @@ namespace Hidra.ViewModels.ProfileViewModels
             PopulatePlugins(mapping);
         }
 
+        // ---------------------------------------------------------------------------
+        // Event Handlers
+        // ---------------------------------------------------------------------------
+
         private void ContextOnActiveProfileChangedEvent(Profile profile)
         {
             OnPropertyChanged(nameof(ButtonsEnabled));
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         public void Remove()
         {
@@ -48,6 +64,10 @@ namespace Hidra.ViewModels.ProfileViewModels
             
             PopulateDeviceBindingsViewModels();
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void PopulateDeviceBindingsViewModels()
         {
@@ -99,6 +119,10 @@ namespace Hidra.ViewModels.ProfileViewModels
 
             AddPlugin(result.SelectedPlugin.Plugin);
         }
+
+        // ---------------------------------------------------------------------------
+        // Events
+        // ---------------------------------------------------------------------------
 
         public event PropertyChangedEventHandler PropertyChanged;
 

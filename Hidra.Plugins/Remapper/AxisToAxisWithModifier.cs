@@ -15,6 +15,10 @@ namespace Hidra.Plugins.Remapper
     [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxisToAxisWithModifier : Plugin
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         [PluginGui("Invert")]
         public bool Invert { get; set; }
 
@@ -33,10 +37,18 @@ namespace Hidra.Plugins.Remapper
         [PluginGui("Modifier held percentage", Group = "Sensitivity", Order = 1)]
         public int ModifierSensitivity { get; set; }
 
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly AntiDeadZoneHelper _antiDeadZoneHelper = new AntiDeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
         private readonly SensitivityHelper _modifierSensitivityHelper = new SensitivityHelper();
+
+        // ---------------------------------------------------------------------------
+        // Construction
+        // ---------------------------------------------------------------------------
 
         public AxisToAxisWithModifier()
         {
@@ -45,6 +57,10 @@ namespace Hidra.Plugins.Remapper
             Sensitivity = 100;
             ModifierSensitivity = 50;
         }
+
+        // ---------------------------------------------------------------------------
+        // Plugin Lifecycle
+        // ---------------------------------------------------------------------------
 
         public override void InitializeCacheValues()
         {
@@ -81,6 +97,10 @@ namespace Hidra.Plugins.Remapper
             _modifierSensitivityHelper.Percentage = ModifierSensitivity;
             _modifierSensitivityHelper.IsLinear = Linear;
         }
+
+        // ---------------------------------------------------------------------------
+        // Validation
+        // ---------------------------------------------------------------------------
 
         public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
         {

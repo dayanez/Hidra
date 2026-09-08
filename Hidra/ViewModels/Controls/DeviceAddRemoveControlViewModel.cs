@@ -11,10 +11,18 @@ namespace Hidra.ViewModels.Controls
 {
     public class DeviceAddRemoveControlViewModel
     {
+        // ---------------------------------------------------------------------------
+        // Properties
+        // ---------------------------------------------------------------------------
+
         public string TitleLeft { get; set; }
         public string TitleRight { get; set; }
         public ObservableCollection<DeviceViewModel> AvailableDevices { get; set; }
         public ObservableCollection<DeviceViewModel> ShadowDevices { get; set; }
+
+        // ---------------------------------------------------------------------------
+        // Constructors
+        // ---------------------------------------------------------------------------
 
         public DeviceAddRemoveControlViewModel() { }
 
@@ -42,6 +50,10 @@ namespace Hidra.ViewModels.Controls
             SetFirstElement(ShadowDevices);
         }
 
+        // ---------------------------------------------------------------------------
+        // Event Handlers
+        // ---------------------------------------------------------------------------
+
         private void Devices_CollectionChanged(
             object sender,
             System.Collections.Specialized.NotifyCollectionChangedEventArgs e
@@ -50,6 +62,10 @@ namespace Hidra.ViewModels.Controls
             var collection = sender as ObservableCollection<DeviceViewModel>;
             SetFirstElement(collection);
         }
+
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
 
         public void AddShadowDevice(DeviceViewModel device)
         {
@@ -68,6 +84,10 @@ namespace Hidra.ViewModels.Controls
                 AvailableDevices.Add(device);
             }
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void SetFirstElement(ObservableCollection<DeviceViewModel> deviceList)
         {

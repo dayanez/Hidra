@@ -51,6 +51,10 @@ namespace Hidra.Core.Managers
             Logger.Debug($"Start bind mode");
         }
 
+        // ---------------------------------------------------------------------------
+        // Public API
+        // ---------------------------------------------------------------------------
+
         public void BeginBindMode(DeviceBinding deviceBinding)
         {
             // Captured here because this is always called on the UI thread, unlike InputChanged
@@ -72,6 +76,10 @@ namespace Hidra.Core.Managers
             BindingTimer.Start();
             bindmodeActive = true;
         }
+
+        // ---------------------------------------------------------------------------
+        // Private Helpers
+        // ---------------------------------------------------------------------------
 
         private void BindingTimerOnTick(object? sender, EventArgs e)
         {
@@ -164,6 +172,10 @@ namespace Hidra.Core.Managers
                                          && deviceConfiguration.Device.DeviceNumber == deviceDescriptor.DeviceInstance
             );
         }
+
+        // ---------------------------------------------------------------------------
+        // IDisposable / INotifyPropertyChanged
+        // ---------------------------------------------------------------------------
 
         public void Dispose()
         {

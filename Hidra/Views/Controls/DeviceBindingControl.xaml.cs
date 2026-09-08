@@ -17,6 +17,10 @@ namespace Hidra.Views.Controls
     /// </summary>
     public partial class DeviceBindingControl : UserControl
     {
+        // ---------------------------------------------------------------------------
+        // Dependency Properties & Fields
+        // ---------------------------------------------------------------------------
+
         public static readonly DependencyProperty DeviceBindingProperty = DependencyProperty.Register("DeviceBinding", typeof(DeviceBinding), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBinding)));
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
         public static readonly DependencyProperty CategoryProperty = DependencyProperty.Register("Category", typeof(DeviceBindingCategory?), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBindingCategory?)));
@@ -26,12 +30,20 @@ namespace Hidra.Views.Controls
 
         private bool HasLoaded = false;
 
+        // ---------------------------------------------------------------------------
+        // Constructor
+        // ---------------------------------------------------------------------------
+
         public DeviceBindingControl()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
             InitializeComponent();
             Loaded += UserControl_Loaded;
         }
+
+        // ---------------------------------------------------------------------------
+        // Context Menu Building
+        // ---------------------------------------------------------------------------
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -96,6 +108,10 @@ namespace Hidra.Views.Controls
             return new ContextMenuItem("Clear binding", null, clearCommand);
         }
 
+        // ---------------------------------------------------------------------------
+        // Dependency Property Accessors
+        // ---------------------------------------------------------------------------
+
         public DeviceBinding DeviceBinding
         {
             get { return (DeviceBinding)GetValue(DeviceBindingProperty); }
@@ -113,6 +129,10 @@ namespace Hidra.Views.Controls
             get { return (DeviceBindingCategory?) GetValue(CategoryProperty); }
             set { SetValue(CategoryProperty, value); }
         }
+
+        // ---------------------------------------------------------------------------
+        // Event Handlers
+        // ---------------------------------------------------------------------------
 
         private void DeviceNumberBox_OnSelected(object sender, RoutedEventArgs e)
         {

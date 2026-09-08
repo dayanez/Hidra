@@ -14,10 +14,18 @@ namespace Hidra.Tests.ModelTests
     [TestFixture]
     internal class ProfileTests
     {
+        // ---------------------------------------------------------------------------
+        // Fields
+        // ---------------------------------------------------------------------------
+
         private Context _context;
         private Profile _profile;
         private Mapping _mapping;
         private string _profileName;
+
+        // ---------------------------------------------------------------------------
+        // Setup
+        // ---------------------------------------------------------------------------
 
         [SetUp]
         public void Setup()
@@ -29,6 +37,10 @@ namespace Hidra.Tests.ModelTests
             _mapping = _profile.AddMapping("Test mapping");
             _profileName = "Test";
         }
+
+        // ---------------------------------------------------------------------------
+        // Tests
+        // ---------------------------------------------------------------------------
 
         [Test]
         public void AddChildProfile()
