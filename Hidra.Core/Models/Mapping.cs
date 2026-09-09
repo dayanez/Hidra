@@ -135,6 +135,7 @@ namespace Hidra.Core.Models
                 if (plugin.IsFiltered()) continue;
 
                 plugin.Update(InputCache.ToArray());
+                Profile.Context.ActivityMonitor.RecordEvent();
             }
         }
 

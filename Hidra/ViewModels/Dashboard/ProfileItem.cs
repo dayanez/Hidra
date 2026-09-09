@@ -33,7 +33,7 @@ namespace Hidra.ViewModels.Dashboard
                     Profile = profile
                 });
             }
-            
+
             return profileItems;
         }
 

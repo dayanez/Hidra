@@ -89,11 +89,8 @@
                         <materialDesign:PackIcon Kind="Stop"/>
                     </Button>
                     <Separator />
-                    <Button ToolTip="Help" Click="Help_OnClick">
-                        <materialDesign:PackIcon Kind="Help"/>
-                    </Button>
-                    <Button ToolTip="About" Click="About_OnClick">
-                        <materialDesign:PackIcon Kind="About"/>
+                    <Button ToolTip="Remap activity" Click="ActivityMonitor_OnClick">
+                        <materialDesign:PackIcon Kind="ChartLine"/>
                     </Button>
                 </ToolBar>
             </ToolBarTray>

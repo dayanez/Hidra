@@ -5,3 +5,7 @@ Do this every so often to make sure nothing is vulnerable
 --------------------------------
 dotnet list package --vulnerable.-
 --------------------------------
+
+Windows version of GREPPER
+
+findstr /s /i /c:"string" *.cs

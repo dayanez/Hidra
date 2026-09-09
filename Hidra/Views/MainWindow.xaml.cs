@@ -381,15 +381,9 @@ namespace Hidra.Views
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
 
-        private async void About_OnClick(object sender, RoutedEventArgs e)
+        private async void ActivityMonitor_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new AboutDialog();
-            await DialogHost.Show(dialog, "RootDialog");
-        }
-
-        private async void Help_OnClick(object sender, RoutedEventArgs e)
-        {
-            var dialog = new HelpDialog();
+            var dialog = new ActivityMonitorDialog(Context);
             await DialogHost.Show(dialog, "RootDialog");
         }
 

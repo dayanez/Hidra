@@ -30,6 +30,7 @@ namespace Hidra.Core
         [XmlIgnore] public PluginsManager PluginManager { get; set; } = null!;
         [XmlIgnore] public BindingManager BindingManager { get; set; } = null!;
         [XmlIgnore] public ProcessProfileSwitcher ProcessProfileSwitcher { get; set; } = null!;
+        [XmlIgnore] public ActivityMonitor ActivityMonitor { get; set; } = null!;
 
         public delegate void ActiveProfileChanged(Profile? profile);
         public event ActiveProfileChanged? ActiveProfileChangedEvent;
@@ -48,7 +49,8 @@ namespace Hidra.Core
         }
 
         [MemberNotNull(nameof(Profiles), nameof(ProfilesManager), nameof(DevicesManager),
-            nameof(SubscriptionsManager), nameof(PluginManager), nameof(BindingManager), nameof(ProcessProfileSwitcher))]
+            nameof(SubscriptionsManager), nameof(PluginManager), nameof(BindingManager), nameof(ProcessProfileSwitcher),
+            nameof(ActivityMonitor))]
         private void Init()
         {
             IsNotSaved = false;
@@ -69,6 +71,7 @@ namespace Hidra.Core
             PluginManager = new PluginsManager(PluginPath);
             BindingManager = new BindingManager(this);
             ProcessProfileSwitcher = new ProcessProfileSwitcher(this);
+            ActivityMonitor = new ActivityMonitor();
         }
 
         [MemberNotNull(nameof(options))]

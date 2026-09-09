@@ -26,7 +26,7 @@ neither. It only does keyboard and mouse, on purpose, and that narrow scope is w
 without installing anything at the driver level, on hardware from any manufacturer.
 
 ## DISCLAIMER
-This Software will be flagged as malware. It is open source and you are free to inspect it as needed. The reason it's going to be flagged as malware is because this type of software could be used to make keyloggers and other offensive tools. I for the sake of safety will not be explaining and or elaborating how to do this. Refer to `SECURITY.md` as needed. 
+This Software will be flagged as malware. It is open source and you are free to inspect it as needed. The reason it's going to be flagged as malware is because this type of software could be used to make keyloggers and other offensive tools. I for the sake of safety will not be explaining and or elaborating how to do this. Refer to `SECURITY.md` as needed.
 
 ## Features
 
@@ -57,19 +57,6 @@ the ".NET desktop development" workload). There's nothing else to install.
 dotnet build Hidra.sln
 dotnet run --project Hidra\Hidra.csproj
 ```
-
-## Current status
-
-This is an active, in-progress fork, not a finished product yet. Working today:
-
-- Driver-free keyboard and mouse capture and output, via a single provider (`Core_RawInputHook`)
-- The full remapping engine, plugin system, and WPF UI described above
-
-Out of scope, on purpose, not a gap to be filled: Hidra does not support game controllers,
-gamepads, or joysticks, as input or output. The original project this forked from supported those,
-along with MIDI, eye trackers, and other niche devices; all of that was removed rather than
-ported, in favor of doing one thing (keyboard and mouse) well. It's still in git history if a
-future fork wants it back; see `CHANGELOG.md`.
 
 ## How it's built
 

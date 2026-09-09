@@ -86,7 +86,7 @@ namespace Hidra.ViewModels.Dashboard
             OnPropertyChanged(nameof(ActiveProfileBreadCrumbs));
             OnPropertyChanged(nameof(CanDeactivateProfile));
         }
-        
+
         // ---------------------------------------------------------------------------
         // INotifyPropertyChanged plumbing
         // ---------------------------------------------------------------------------

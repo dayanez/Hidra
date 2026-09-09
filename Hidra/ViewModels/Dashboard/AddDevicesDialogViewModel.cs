@@ -20,7 +20,7 @@ namespace Hidra.ViewModels.Dashboard
         {
             Devices = new DeviceSelectControlViewModel($"Add {(deviceIoType == DeviceIoType.Input ? "input" : "output")} devices", devices);
             ViewModel = this;
-            
+
         }
     }
 }
